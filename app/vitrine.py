@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template
-from app.models import User, Character, NewsArticle
+from app.models import NewsArticle, DFCharacter
 from app import db
 
 vitrine_bp = Blueprint('vitrine', __name__)
@@ -7,14 +7,14 @@ vitrine_bp = Blueprint('vitrine', __name__)
 
 @vitrine_bp.route('/')
 def index():
-    total_users = User.query.filter_by(is_active=True).count()
-    total_characters = Character.query.filter_by(is_active=True).count()
-    latest_news = NewsArticle.query.filter_by(is_published=True)\
+    articles = NewsArticle.query.filter_by(is_published=True)\
         .order_by(NewsArticle.published_at.desc()).limit(3).all()
-    return render_template('vitrine/index.html',
-                           total_users=total_users,
-                           total_characters=total_characters,
-                           latest_news=latest_news)
+    # Stats serveur depuis DarkflameServer
+    try:
+        total_chars = DFCharacter.query.count()
+    except Exception:
+        total_chars = 0
+    return render_template('vitrine/index.html', articles=articles, total_chars=total_chars)
 
 
 @vitrine_bp.route('/about')
@@ -34,10 +34,14 @@ def gallery():
 
 @vitrine_bp.route('/leaderboard')
 def leaderboard():
-    top_characters = Character.query.filter_by(is_active=True)\
-        .order_by(Character.level.desc(), Character.universe_score.desc())\
-        .limit(20).all()
-    return render_template('vitrine/leaderboard.html', top_characters=top_characters)
+    try:
+        # Lecture depuis DarkflameServer
+        top_chars = DFCharacter.query\
+            .order_by(DFCharacter.last_login.desc())\
+            .limit(25).all()
+    except Exception:
+        top_chars = []
+    return render_template('vitrine/leaderboard.html', top_characters=top_chars)
 
 
 @vitrine_bp.route('/legal')

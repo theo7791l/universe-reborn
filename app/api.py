@@ -1,53 +1,48 @@
 from flask import Blueprint, jsonify
-from app.models import User, Character
+from app.models import DFCharacter, User, NewsArticle
 from app import db
-import socket
-import os
 
 api_bp = Blueprint('api', __name__)
 
 
-def check_port(host, port, timeout=2):
-    """Vérifie si un port TCP est ouvert."""
-    try:
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.settimeout(timeout)
-        result = sock.connect_ex((host, port))
-        sock.close()
-        return result == 0
-    except Exception:
-        return False
-
-
 @api_bp.route('/status')
 def server_status():
-    """Retourne le statut du serveur DarkflameServer."""
-    dfs_host = os.environ.get('DFS_HOST', 'localhost')
-    dfs_port = int(os.environ.get('DFS_AUTH_PORT', 1001))
-
-    is_online = check_port(dfs_host, dfs_port)
-
-    total_users = User.query.filter_by(is_active=True).count()
-    total_characters = Character.query.filter_by(is_active=True).count()
-
+    """Statut public du serveur — appelé par le JS de la page d'accueil."""
+    try:
+        player_count = DFCharacter.query.count()
+        db_ok = True
+    except Exception:
+        player_count = 0
+        db_ok = False
     return jsonify({
-        'online': is_online,
-        'players_online': 0,  # À connecter à DarkflameServer via sa propre API/DB
-        'total_users': total_users,
-        'total_characters': total_characters,
-        'server': 'Universe Reborn'
+        'online': db_ok,
+        'player_count': player_count,
+        'registered_accounts': User.query.count() if db_ok else 0,
+        'version': '1.0.0'
     })
 
 
 @api_bp.route('/leaderboard')
 def leaderboard():
-    """Retourne le classement des joueurs."""
-    top = Character.query.filter_by(is_active=True)\
-        .order_by(Character.level.desc(), Character.universe_score.desc())\
-        .limit(10).all()
+    """Top 10 personnages pour la page d'accueil."""
+    try:
+        chars = DFCharacter.query.order_by(DFCharacter.last_login.desc()).limit(10).all()
+        data = [{
+            'name': c.name,
+            'zone': c.zone_name,
+            'last_login': c.last_login.isoformat() if c.last_login else None
+        } for c in chars]
+    except Exception:
+        data = []
+    return jsonify(data)
+
+
+@api_bp.route('/news')
+def news():
+    articles = NewsArticle.query.filter_by(is_published=True)\
+        .order_by(NewsArticle.published_at.desc()).limit(5).all()
     return jsonify([{
-        'name': c.name,
-        'level': c.level,
-        'universe_score': c.universe_score,
-        'zone': c.current_zone
-    } for c in top])
+        'id': a.id, 'title': a.title, 'slug': a.slug,
+        'category': a.category, 'excerpt': a.excerpt,
+        'published_at': a.published_at.isoformat() if a.published_at else None
+    } for a in articles])
