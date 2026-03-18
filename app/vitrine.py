@@ -1,6 +1,7 @@
+import time
 from flask import Blueprint, render_template
-from app.models import NewsArticle, DFCharacter
 from app import db
+from app.models import NewsArticle, ZONE_NAMES
 
 vitrine_bp = Blueprint('vitrine', __name__)
 
@@ -9,12 +10,15 @@ vitrine_bp = Blueprint('vitrine', __name__)
 def index():
     articles = NewsArticle.query.filter_by(is_published=True)\
         .order_by(NewsArticle.published_at.desc()).limit(3).all()
-    # Stats serveur depuis DarkflameServer
     try:
-        total_chars = DFCharacter.query.count()
+        with db.engine.connect() as conn:
+            total_accounts = conn.execute(db.text("SELECT COUNT(*) FROM accounts")).fetchone()[0]
+            total_chars    = conn.execute(db.text("SELECT COUNT(*) FROM charinfo")).fetchone()[0]
     except Exception:
+        total_accounts = 0
         total_chars = 0
-    return render_template('vitrine/index.html', articles=articles, total_chars=total_chars)
+    return render_template('vitrine/index.html', articles=articles,
+                           total_accounts=total_accounts, total_chars=total_chars)
 
 
 @vitrine_bp.route('/about')
@@ -35,13 +39,15 @@ def gallery():
 @vitrine_bp.route('/leaderboard')
 def leaderboard():
     try:
-        # Lecture depuis DarkflameServer
-        top_chars = DFCharacter.query\
-            .order_by(DFCharacter.last_login.desc())\
-            .limit(25).all()
+        with db.engine.connect() as conn:
+            rows = conn.execute(db.text(
+                "SELECT c.name, c.last_zone, c.last_login "
+                "FROM charinfo c ORDER BY c.last_login DESC LIMIT 25"
+            )).fetchall()
+        chars = [{'name': r[0], 'zone': ZONE_NAMES.get(r[1], '?'), 'last_login': r[2]} for r in rows]
     except Exception:
-        top_chars = []
-    return render_template('vitrine/leaderboard.html', top_characters=top_chars)
+        chars = []
+    return render_template('vitrine/leaderboard.html', top_characters=chars)
 
 
 @vitrine_bp.route('/legal')

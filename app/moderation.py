@@ -12,17 +12,16 @@ def report_bug():
     error = None
     if request.method == 'POST':
         title = request.form.get('title', '').strip()
-        description = request.form.get('description', '').strip()
-        if not title or not description:
-            error = 'Titre et description sont obligatoires.'
+        desc  = request.form.get('description', '').strip()
+        if not title or not desc:
+            error = 'Titre et description obligatoires.'
         else:
-            report = BugReport(
-                user_id=current_user.id,
-                title=title,
-                description=description
-            )
-            db.session.add(report)
+            db.session.add(BugReport(
+                account_id=current_user.id,
+                reporter_name=current_user.username,
+                title=title, description=desc
+            ))
             db.session.commit()
-            flash('Rapport de bug envoyé, merci !', 'success')
+            flash('Rapport envoyé, merci !', 'success')
             return redirect(url_for('accounts.dashboard'))
     return render_template('panel/report_bug.html', error=error)
