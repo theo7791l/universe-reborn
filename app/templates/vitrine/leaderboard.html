@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}Classements — Universe Reborn{% endblock %}
+{% block content %}
+
+<section class="page-hero">
+    <div class="page-hero-content">
+        <h1 class="page-title reveal">CLASSEMENTS</h1>
+        <p class="page-subtitle reveal delay-2">Les meilleurs héros d'Universe Reborn</p>
+    </div>
+</section>
+
+<section class="section-container">
+    <div class="leaderboard-table-wrapper reveal">
+        <table class="leaderboard-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Personnage</th>
+                    <th>Niveau</th>
+                    <th>Score Univers</th>
+                    <th>Zone actuelle</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if top_characters %}
+                    {% for char in top_characters %}
+                    <tr class="leaderboard-row reveal" style="animation-delay: {{ loop.index0 * 0.05 }}s">
+                        <td class="rank-cell">
+                            {% if loop.index == 1 %}<span class="rank-medal gold">🥇</span>
+                            {% elif loop.index == 2 %}<span class="rank-medal silver">🥈</span>
+                            {% elif loop.index == 3 %}<span class="rank-medal bronze">🥉</span>
+                            {% else %}<span class="rank-number">{{ loop.index }}</span>
+                            {% endif %}
+                        </td>
+                        <td class="name-cell">
+                            <span class="char-icon">🧱</span>
+                            <strong>{{ char.name }}</strong>
+                        </td>
+                        <td><span class="level-badge">Niv. {{ char.level }}</span></td>
+                        <td><span class="score-value">{{ '{:,}'.format(char.universe_score).replace(',', ' ') }}</span></td>
+                        <td><span class="zone-tag">{{ char.current_zone }}</span></td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                <tr>
+                    <td colspan="5" class="no-content" style="text-align:center; padding: 3rem">
+                        Aucun joueur classé pour le moment. Soyez le premier !
+                    </td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

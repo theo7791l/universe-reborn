@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}Signaler un bug — Universe Reborn{% endblock %}
+{% block body_class %}panel-page{% endblock %}
+{% block content %}
+
+<section class="auth-section">
+    <div class="auth-container" style="max-width: 600px">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h1>🐛 SIGNALER UN BUG</h1>
+                <p>Aidez-nous à améliorer Universe Reborn</p>
+            </div>
+            <form method="POST" action="{{ url_for('moderation.report_bug') }}" class="auth-form">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="form-group">
+                    <label>Titre du bug</label>
+                    <input type="text" name="title" class="form-input" placeholder="Description courte du problème" required>
+                </div>
+                <div class="form-group">
+                    <label>Description détaillée</label>
+                    <textarea name="description" class="form-input" rows="6" placeholder="Décrivez le bug en détail : comment le reproduire, ce qui était attendu, ce qui s'est passé..." required style="resize: vertical"></textarea>
+                </div>
+                <button type="submit" class="btn-primary btn-full">ENVOYER LE RAPPORT</button>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

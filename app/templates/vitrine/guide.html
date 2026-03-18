@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% block title %}Comment Jouer — Universe Reborn{% endblock %}
+{% block content %}
+
+<section class="page-hero">
+    <div class="page-hero-content">
+        <h1 class="page-title reveal">COMMENT <span class="text-glow">JOUER</span></h1>
+        <p class="page-subtitle reveal delay-2">Suivez ce guide pour rejoindre Universe Reborn en quelques minutes</p>
+    </div>
+</section>
+
+<section class="section-container">
+    <div class="guide-steps">
+
+        <div class="guide-step reveal">
+            <div class="step-number">01</div>
+            <div class="step-content">
+                <h2>Obtenir le client LEGO Universe</h2>
+                <p>Vous devez posséder une copie légale originale de LEGO Universe. Universe Reborn ne distribue <strong>aucun fichier du jeu</strong>. Vérifiez les plateformes de rétro-gaming légales ou utilisez votre copie physique originale.</p>
+                <div class="step-warning">
+                    ⚠️ Universe Reborn ne distribue aucun fichier du client LEGO Universe. Vous devez le posséder légalement.
+                </div>
+            </div>
+        </div>
+
+        <div class="guide-step reveal">
+            <div class="step-number">02</div>
+            <div class="step-content">
+                <h2>Créer votre compte</h2>
+                <p>Rendez-vous sur la page d'inscription et créez votre compte Universe Reborn. Vous aurez besoin d'une <strong>clé d'accès (Play Key)</strong> disponible sur notre serveur Discord.</p>
+                <a href="{{ url_for('accounts.register') }}" class="btn-primary">CRÉER UN COMPTE</a>
+            </div>
+        </div>
+
+        <div class="guide-step reveal">
+            <div class="step-number">03</div>
+            <div class="step-content">
+                <h2>Télécharger le fichier boot.cfg</h2>
+                <p>Téléchargez notre fichier <code>boot.cfg</code> préconfiguré pour pointer vers le serveur Universe Reborn. Ce fichier remplace celui présent dans votre dossier d'installation de LEGO Universe.</p>
+                <a href="{{ url_for('static', filename='downloads/boot.cfg') }}" class="btn-secondary" download>TÉLÉCHARGER boot.cfg</a>
+            </div>
+        </div>
+
+        <div class="guide-step reveal">
+            <div class="step-number">04</div>
+            <div class="step-content">
+                <h2>Installer le fichier boot.cfg</h2>
+                <p>Placez le fichier <code>boot.cfg</code> téléchargé dans votre dossier d'installation de LEGO Universe, en remplaçant le fichier existant.</p>
+                <div class="code-block">
+                    <span class="code-comment"># Chemin typique sous Windows :</span><br>
+                    C:\Program Files\LEGO Software\LEGO Universe\<br><br>
+                    <span class="code-comment"># Remplacez le boot.cfg existant par le nôtre</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="guide-step reveal">
+            <div class="step-number">05</div>
+            <div class="step-content">
+                <h2>Lancer LEGO Universe et jouer !</h2>
+                <p>Lancez LEGO Universe normalement, connectez-vous avec les identifiants de votre compte Universe Reborn et profitez du jeu !</p>
+                <div class="step-success">
+                    ✅ Si le serveur est en ligne, vous devriez voir l'écran de connexion d'Universe Reborn.
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- FAQ -->
+    <div class="faq-section">
+        <h2 class="section-title reveal">FAQ — <span class="text-glow">Questions fréquentes</span></h2>
+        <div class="faq-list">
+            <div class="faq-item reveal">
+                <button class="faq-question">Où obtenir une clé d'accès (Play Key) ?</button>
+                <div class="faq-answer"><p>Les clés d'accès sont distribuées sur notre serveur Discord. Rejoignez-nous et demandez une clé dans le canal dédié.</p></div>
+            </div>
+            <div class="faq-item reveal">
+                <button class="faq-question">Le jeu est-il gratuit ?</button>
+                <div class="faq-answer"><p>Universe Reborn est entièrement gratuit. Cependant, vous devez posséder le client original de LEGO Universe.</p></div>
+            </div>
+            <div class="faq-item reveal">
+                <button class="faq-question">Quels mondes sont disponibles ?</button>
+                <div class="faq-answer"><p>La plupart des mondes originaux sont disponibles : Venture Explorer, Avant Gardens, Nimbus Station, Forbidden Valley, Nexus Tower et plus encore.</p></div>
+            </div>
+            <div class="faq-item reveal">
+                <button class="faq-question">Le serveur est-il stable ?</button>
+                <div class="faq-answer"><p>Nous faisons de notre mieux pour maintenir le serveur en ligne en permanence. Consultez la page d'accueil pour le statut en temps réel.</p></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% block extra_js %}
+<script>
+document.querySelectorAll('.faq-question').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const item = btn.parentElement;
+        const isOpen = item.classList.contains('open');
+        document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+        if (!isOpen) item.classList.add('open');
+    });
+});
+</script>
+{% endblock %}
+{% endblock %}

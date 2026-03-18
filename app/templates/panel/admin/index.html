@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% block title %}Panel Admin — Universe Reborn{% endblock %}
+{% block body_class %}panel-page{% endblock %}
+{% block content %}
+
+<section class="dashboard-section">
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <h1>🛡️ PANEL <span class="text-glow">ADMIN</span></h1>
+            <p>Tableau de bord administrateur</p>
+        </div>
+
+        <div class="admin-stats-grid">
+            <div class="admin-stat-card reveal">
+                <div class="stat-icon">👥</div>
+                <div class="stat-info">
+                    <span class="stat-big">{{ stats.total_users }}</span>
+                    <span class="stat-desc">Joueurs inscrits</span>
+                </div>
+            </div>
+            <div class="admin-stat-card reveal delay-1">
+                <div class="stat-icon">✅</div>
+                <div class="stat-info">
+                    <span class="stat-big" style="color: var(--color-success)">{{ stats.active_users }}</span>
+                    <span class="stat-desc">Comptes actifs</span>
+                </div>
+            </div>
+            <div class="admin-stat-card reveal delay-2">
+                <div class="stat-icon">🚫</div>
+                <div class="stat-info">
+                    <span class="stat-big" style="color: var(--color-danger)">{{ stats.banned_users }}</span>
+                    <span class="stat-desc">Comptes bannis</span>
+                </div>
+            </div>
+            <div class="admin-stat-card reveal delay-3">
+                <div class="stat-icon">🧱</div>
+                <div class="stat-info">
+                    <span class="stat-big">{{ stats.total_characters }}</span>
+                    <span class="stat-desc">Personnages créés</span>
+                </div>
+            </div>
+            <div class="admin-stat-card reveal delay-4">
+                <div class="stat-icon">📰</div>
+                <div class="stat-info">
+                    <span class="stat-big">{{ stats.total_articles }}</span>
+                    <span class="stat-desc">Articles publiés</span>
+                </div>
+            </div>
+            <div class="admin-stat-card reveal delay-5">
+                <div class="stat-icon">🐛</div>
+                <div class="stat-info">
+                    <span class="stat-big" style="color: var(--color-warning)">{{ stats.open_bug_reports }}</span>
+                    <span class="stat-desc">Bugs ouverts</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="admin-actions">
+            <h2 class="section-title">ACTIONS <span class="text-glow">RAPIDES</span></h2>
+            <div class="admin-actions-grid">
+                <a href="{{ url_for('admin.players') }}" class="admin-action-card">
+                    <span class="action-icon">👥</span>
+                    <span>Gérer les joueurs</span>
+                </a>
+                <form method="POST" action="{{ url_for('admin.generate_play_key') }}" style="margin:0">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="admin-action-card" style="width:100%; cursor:pointer; background: var(--color-bg-card); border: 1px solid var(--color-border); color: var(--color-text); text-align:center">
+                        <span class="action-icon">🔑</span>
+                        <span>Générer une Play Key</span>
+                    </button>
+                </form>
+                <a href="{{ url_for('news.index') }}" class="admin-action-card">
+                    <span class="action-icon">📰</span>
+                    <span>Gérer les actualités</span>
+                </a>
+                <a href="{{ url_for('vitrine.leaderboard') }}" class="admin-action-card">
+                    <span class="action-icon">🏆</span>
+                    <span>Voir les classements</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

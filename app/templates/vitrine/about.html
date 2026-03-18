@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block title %}À Propos — Universe Reborn{% endblock %}
+{% block content %}
+
+<section class="page-hero">
+    <div class="page-hero-content">
+        <h1 class="page-title reveal">À <span class="text-glow">PROPOS</span></h1>
+        <p class="page-subtitle reveal delay-2">L'histoire du projet Universe Reborn</p>
+    </div>
+</section>
+
+<section class="section-container">
+    <div class="about-grid">
+        <div class="about-block reveal">
+            <h2>🧱 Qu'est-ce que Universe Reborn ?</h2>
+            <p>Universe Reborn est un serveur communautaire fan dédié à <strong>LEGO® Universe</strong>, le MMO développé par NetDevil et publié par le Groupe LEGO en 2010, fermé en janvier 2012. Notre objectif est de permettre à la communauté de redécouvrir ce jeu légendaire dans un environnement sûr, convivial et fidèle à l'original.</p>
+        </div>
+        <div class="about-block reveal delay-2">
+            <h2>⚙️ DarkflameServer</h2>
+            <p>Ce projet repose sur <a href="https://github.com/DarkflameUniverse/DarkflameServer" target="_blank" rel="noopener">DarkflameServer</a>, un émulateur open-source développé par la communauté. Il reproduit fidèlement les mécaniques du jeu original : mondes, personnages, missions, combats contre le Maelstrom et bien plus encore.</p>
+        </div>
+        <div class="about-block reveal">
+            <h2>🌍 Notre communauté</h2>
+            <p>Universe Reborn est avant tout une communauté passionnée. Nous accueillons joueurs débutants et vétérans de LEGO Universe, avec une modération bienveillante et un environnement respectueux pour tous les âges.</p>
+        </div>
+        <div class="about-block reveal delay-2">
+            <h2>⚖️ Légalité & transparence</h2>
+            <p>Universe Reborn est un projet <strong>100% non-officiel et non-commercial</strong>. Nous ne distribuons aucun fichier du jeu original. Les joueurs doivent posséder une copie légale de LEGO Universe pour jouer. Ce projet n'est pas affilié au Groupe LEGO.</p>
+        </div>
+    </div>
+
+    <div class="timeline-section">
+        <h2 class="section-title text-center reveal">TIMELINE DU <span class="text-glow">PROJET</span></h2>
+        <div class="timeline">
+            <div class="timeline-item reveal">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <span class="timeline-date">2010</span>
+                    <h3>Lancement de LEGO Universe</h3>
+                    <p>NetDevil publie LEGO Universe, premier MMO officiel LEGO.</p>
+                </div>
+            </div>
+            <div class="timeline-item reveal">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <span class="timeline-date">2012</span>
+                    <h3>Fermeture du jeu</h3>
+                    <p>LEGO Universe ferme ses portes en janvier 2012.</p>
+                </div>
+            </div>
+            <div class="timeline-item reveal">
+                <div class="timeline-dot" style="background: var(--color-maelstrom)"></div>
+                <div class="timeline-content">
+                    <span class="timeline-date">2021</span>
+                    <h3>DarkflameServer open-source</h3>
+                    <p>La communauté publie DarkflameServer, permettant de faire revivre le jeu.</p>
+                </div>
+            </div>
+            <div class="timeline-item reveal">
+                <div class="timeline-dot" style="background: var(--color-secondary)"></div>
+                <div class="timeline-content">
+                    <span class="timeline-date">2026</span>
+                    <h3>Naissance d'Universe Reborn</h3>
+                    <p>Lancement du projet Universe Reborn, serveur communautaire francophone.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}Actualités — Universe Reborn{% endblock %}
+{% block content %}
+
+<section class="page-hero">
+    <div class="page-hero-content">
+        <h1 class="page-title reveal">ACTUALITÉS</h1>
+        <p class="page-subtitle reveal delay-2">Les dernières nouvelles d'Universe Reborn</p>
+    </div>
+</section>
+
+<section class="section-container">
+    {% if articles %}
+    <div class="news-grid">
+        {% for article in articles %}
+        <a href="{{ url_for('news.detail', slug=article.slug) }}" class="news-card reveal">
+            <div class="news-card-image">
+                {% if article.cover_image %}
+                    <img src="{{ url_for('static', filename='uploads/' + article.cover_image) }}" alt="{{ article.title }}">
+                {% else %}
+                    <div class="news-placeholder"><span>{{ article.category }}</span></div>
+                {% endif %}
+            </div>
+            <div class="news-card-body">
+                <span class="news-category">{{ article.category }}</span>
+                <h3 class="news-title">{{ article.title }}</h3>
+                <p class="news-excerpt">{{ article.excerpt or article.content[:150] ~ '...' }}</p>
+                <div class="news-meta">
+                    <span>{{ article.author.username }}</span>
+                    <span>{{ article.published_at.strftime('%d/%m/%Y') if article.published_at else '' }}</span>
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-icon">📰</div>
+        <h2>Aucune actualité pour le moment</h2>
+        <p>Revenez bientôt pour les dernières nouvelles d'Universe Reborn !</p>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}

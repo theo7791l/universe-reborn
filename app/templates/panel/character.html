@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}{{ character.name }} — Universe Reborn{% endblock %}
+{% block body_class %}panel-page{% endblock %}
+{% block content %}
+
+<section class="dashboard-section">
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <a href="{{ url_for('accounts.dashboard') }}" class="back-link">← Retour au dashboard</a>
+            <h1>🧱 <span class="text-glow">{{ character.name }}</span></h1>
+        </div>
+        <div class="dashboard-grid">
+            <div class="dashboard-card">
+                <h2>📊 Statistiques</h2>
+                <ul class="info-list">
+                    <li><span>Niveau</span><strong style="color: var(--color-secondary)">{{ character.level }}</strong></li>
+                    <li><span>Score Univers</span><strong style="color: var(--color-primary-light)">{{ character.universe_score }}</strong></li>
+                    <li><span>Monnaie</span><strong>{{ character.currency }} 💰</strong></li>
+                    <li><span>Zone actuelle</span><strong>{{ character.current_zone }}</strong></li>
+                    <li><span>Temps de jeu</span><strong>{{ character.play_time // 60 }}h {{ character.play_time % 60 }}min</strong></li>
+                    <li><span>Créé le</span><strong>{{ character.created_at.strftime('%d/%m/%Y') }}</strong></li>
+                </ul>
+            </div>
+            <div class="dashboard-card card-wide">
+                <h2>🗺️ Progression</h2>
+                <div class="progress-section">
+                    <div class="progress-item">
+                        <div class="progress-label">
+                            <span>Niveau {{ character.level }}</span>
+                            <span>{{ character.universe_score }} / {{ character.level * 1000 }} XP</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: {{ [((character.universe_score % 1000) / 1000 * 100), 100] | min }}%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

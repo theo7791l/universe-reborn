@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}{{ article.title }} — Universe Reborn{% endblock %}
+{% block content %}
+
+<section class="article-section">
+    <div class="article-container">
+        <div class="article-header reveal">
+            <a href="{{ url_for('news.index') }}" class="back-link">← Retour aux actualités</a>
+            <span class="news-category">{{ article.category }}</span>
+            <h1 class="article-title">{{ article.title }}</h1>
+            <div class="article-meta">
+                <span>Par <strong>{{ article.author.username }}</strong></span>
+                <span>{{ article.published_at.strftime('%d %B %Y') if article.published_at else '' }}</span>
+            </div>
+        </div>
+        {% if article.cover_image %}
+        <div class="article-cover reveal">
+            <img src="{{ url_for('static', filename='uploads/' + article.cover_image) }}" alt="{{ article.title }}">
+        </div>
+        {% endif %}
+        <div class="article-content reveal">
+            {{ article.content | safe }}
+        </div>
+    </div>
+</section>
+{% endblock %}

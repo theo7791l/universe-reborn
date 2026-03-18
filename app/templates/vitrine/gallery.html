@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block title %}Galerie — Universe Reborn{% endblock %}
+{% block content %}
+
+<section class="page-hero">
+    <div class="page-hero-content">
+        <h1 class="page-title reveal">GALERIE</h1>
+        <p class="page-subtitle reveal delay-2">Screenshots et moments mémorables d'Universe Reborn</p>
+    </div>
+</section>
+
+<section class="section-container">
+    <div class="gallery-filters reveal">
+        <button class="filter-btn active" data-filter="all">Tous</button>
+        <button class="filter-btn" data-filter="avant-gardens">Avant Gardens</button>
+        <button class="filter-btn" data-filter="nimbus">Nimbus Station</button>
+        <button class="filter-btn" data-filter="nexus">Nexus Tower</button>
+        <button class="filter-btn" data-filter="forbidden">Forbidden Valley</button>
+    </div>
+
+    <div class="gallery-grid" id="gallery-grid">
+        {% for i in range(12) %}
+        <div class="gallery-item reveal" data-category="avant-gardens">
+            <div class="gallery-placeholder">
+                <span class="gallery-icon">🧱</span>
+                <span class="gallery-label">Screenshot {{ i + 1 }}</span>
+            </div>
+            <div class="gallery-overlay">
+                <span class="gallery-zoom">🔍</span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="gallery-empty" id="gallery-empty" style="display:none">
+        <p>Les screenshots arrivent bientôt ! Rejoignez notre Discord pour en partager.</p>
+    </div>
+</section>
+
+{% block extra_js %}
+<script>
+const filterBtns = document.querySelectorAll('.filter-btn');
+const items = document.querySelectorAll('.gallery-item');
+filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const filter = btn.dataset.filter;
+        items.forEach(item => {
+            item.style.display = (filter === 'all' || item.dataset.category === filter) ? '' : 'none';
+        });
+    });
+});
+</script>
+{% endblock %}
+{% endblock %}

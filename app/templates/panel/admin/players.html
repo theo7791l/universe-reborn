@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}Gestion des joueurs — Admin Universe Reborn{% endblock %}
+{% block body_class %}panel-page{% endblock %}
+{% block content %}
+
+<section class="dashboard-section">
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <a href="{{ url_for('admin.index') }}" class="back-link">← Retour admin</a>
+            <h1>👥 GESTION DES <span class="text-glow">JOUEURS</span></h1>
+        </div>
+
+        <div class="dashboard-card reveal">
+            <div class="table-wrapper">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Pseudo</th>
+                            <th>Email</th>
+                            <th>Inscrit le</th>
+                            <th>Statut</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr>
+                            <td>{{ user.id }}</td>
+                            <td><strong>{{ user.username }}</strong>{% if user.is_admin %} <span class="badge-admin">ADMIN</span>{% endif %}</td>
+                            <td>{{ user.email }}</td>
+                            <td>{{ user.created_at.strftime('%d/%m/%Y') }}</td>
+                            <td>
+                                {% if user.is_banned %}
+                                    <span class="badge-danger">Banni</span>
+                                {% else %}
+                                    <span class="badge-success">Actif</span>
+                                {% endif %}
+                            </td>
+                            <td class="actions-cell">
+                                {% if not user.is_admin %}
+                                    {% if user.is_banned %}
+                                    <form method="POST" action="{{ url_for('admin.unban_player', user_id=user.id) }}" style="display:inline">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                        <button type="submit" class="btn-action btn-success">Débannir</button>
+                                    </form>
+                                    {% else %}
+                                    <form method="POST" action="{{ url_for('admin.ban_player', user_id=user.id) }}" style="display:inline">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                        <button type="submit" class="btn-action btn-danger">Bannir</button>
+                                    </form>
+                                    {% endif %}
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
