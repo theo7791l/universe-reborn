@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Universe Reborn — Serveur communautaire LEGO Universe{% endblock %}</title>
+    <meta name="description" content="{% block description %}Universe Reborn est un serveur communautaire fan dédié à LEGO® Universe, basé sur DarkflameServer.{% endblock %}">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/animations.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}">
+
+    <!-- Particules Maelstrom en arrière-plan -->
+    <div id="particles-container"></div>
+
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="loading-logo">
+            <span class="logo-text">UNIVERSE</span>
+            <span class="logo-reborn">REBORN</span>
+        </div>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
+    </div>
+
+    <!-- Navbar -->
+    <nav id="navbar" class="navbar">
+        <div class="nav-container">
+            <a href="{{ url_for('vitrine.index') }}" class="nav-logo">
+                <span class="logo-universe">UNIVERSE</span>
+                <span class="logo-reborn">REBORN</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="{{ url_for('vitrine.index') }}" class="nav-link {% if request.endpoint == 'vitrine.index' %}active{% endif %}">Accueil</a></li>
+                <li><a href="{{ url_for('vitrine.about') }}" class="nav-link {% if request.endpoint == 'vitrine.about' %}active{% endif %}">À Propos</a></li>
+                <li><a href="{{ url_for('vitrine.guide') }}" class="nav-link {% if request.endpoint == 'vitrine.guide' %}active{% endif %}">Comment Jouer</a></li>
+                <li><a href="{{ url_for('vitrine.gallery') }}" class="nav-link {% if request.endpoint == 'vitrine.gallery' %}active{% endif %}">Galerie</a></li>
+                <li><a href="{{ url_for('news.index') }}" class="nav-link {% if request.endpoint and 'news' in request.endpoint %}active{% endif %}">Actualités</a></li>
+                <li><a href="{{ url_for('vitrine.leaderboard') }}" class="nav-link {% if request.endpoint == 'vitrine.leaderboard' %}active{% endif %}">Classements</a></li>
+            </ul>
+            <div class="nav-actions">
+                {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('accounts.dashboard') }}" class="btn-nav-secondary">Mon Espace</a>
+                    {% if current_user.is_admin %}
+                        <a href="{{ url_for('admin.index') }}" class="btn-nav-admin">Admin</a>
+                    {% endif %}
+                    <a href="{{ url_for('accounts.logout') }}" class="btn-nav-logout">Déconnexion</a>
+                {% else %}
+                    <a href="{{ url_for('accounts.login') }}" class="btn-nav-secondary">Connexion</a>
+                    <a href="{{ url_for('accounts.register') }}" class="btn-nav-primary">Rejoindre</a>
+                {% endif %}
+            </div>
+            <button class="nav-burger" id="nav-burger" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="flash-container">
+        {% for category, message in messages %}
+        <div class="flash flash-{{ category }}">
+            {{ message }}
+            <button class="flash-close" onclick="this.parentElement.remove()">✕</button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <!-- Contenu principal -->
+    <main id="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <span class="logo-universe">UNIVERSE</span>
+                <span class="logo-reborn">REBORN</span>
+                <p>Serveur communautaire LEGO® Universe.<br>Projet fan non-officiel basé sur DarkflameServer.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Navigation</h4>
+                <ul>
+                    <li><a href="{{ url_for('vitrine.index') }}">Accueil</a></li>
+                    <li><a href="{{ url_for('vitrine.about') }}">À Propos</a></li>
+                    <li><a href="{{ url_for('vitrine.guide') }}">Comment Jouer</a></li>
+                    <li><a href="{{ url_for('vitrine.gallery') }}">Galerie</a></li>
+                    <li><a href="{{ url_for('news.index') }}">Actualités</a></li>
+                    <li><a href="{{ url_for('vitrine.leaderboard') }}">Classements</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Communauté</h4>
+                <ul>
+                    <li><a href="#" id="discord-footer-link">Discord</a></li>
+                    <li><a href="https://github.com/DarkflameUniverse/DarkflameServer" target="_blank" rel="noopener">DarkflameServer GitHub</a></li>
+                    <li><a href="{{ url_for('news.index') }}">Actualités</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Légal</h4>
+                <ul>
+                    <li><a href="{{ url_for('vitrine.legal') }}">Mentions légales</a></li>
+                    <li><a href="{{ url_for('vitrine.legal') }}">Politique de confidentialité</a></li>
+                    <li><a href="{{ url_for('vitrine.legal') }}">Conditions d'utilisation</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 Universe Reborn. Propulsé par <a href="https://github.com/DarkflameUniverse/DarkflameServer" target="_blank" rel="noopener">DarkflameServer</a>.</p>
+            <p class="footer-disclaimer">Universe Reborn n'est pas affilié au Groupe LEGO®. LEGO® et LEGO® Universe sont des marques déposées du Groupe LEGO®.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.4/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.4/ScrollTrigger.min.js"></script>
+    <script src="{{ url_for('static', filename='js/particles.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/animations.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

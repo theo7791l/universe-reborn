@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+
+{% block title %}Universe Reborn — Redécouvrez LEGO® Universe{% endblock %}
+
+{% block content %}
+<!-- HERO SECTION -->
+<section class="hero" id="hero">
+    <div class="hero-bg">
+        <div class="hero-overlay"></div>
+    </div>
+    <div class="hero-content">
+        <div class="hero-badge" id="server-status-badge">
+            <span class="status-dot" id="status-dot"></span>
+            <span id="status-text">Vérification...</span>
+        </div>
+        <h1 class="hero-title">
+            <span class="title-universe">UNIVERSE</span>
+            <span class="title-reborn">REBORN</span>
+        </h1>
+        <p class="hero-subtitle">Redécouvrez l'aventure LEGO® Universe sur notre serveur communautaire.<br>Construisez, explorez et combattez le Maelstrom !</p>
+        <div class="hero-cta">
+            <a href="{{ url_for('accounts.register') }}" class="btn-primary btn-glow">REJOINDRE L'AVENTURE</a>
+            <a href="{{ url_for('vitrine.guide') }}" class="btn-secondary">COMMENT JOUER</a>
+        </div>
+        <div class="hero-stats">
+            <div class="stat-item">
+                <span class="stat-value" data-target="{{ total_users }}">0</span>
+                <span class="stat-label">Joueurs inscrits</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value" id="players-online">0</span>
+                <span class="stat-label">En ligne</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value" data-target="{{ total_characters }}">0</span>
+                <span class="stat-label">Personnages</span>
+            </div>
+        </div>
+    </div>
+    <div class="hero-scroll-indicator">
+        <span>Défiler</span>
+        <div class="scroll-arrow"></div>
+    </div>
+</section>
+
+<!-- MONDES -->
+<section class="worlds-section" id="worlds">
+    <div class="section-container">
+        <div class="section-header">
+            <h2 class="section-title">EXPLOREZ LES <span class="text-glow">MONDES</span></h2>
+            <p class="section-subtitle">Voyagez à travers les différents mondes de LEGO® Universe</p>
+        </div>
+        <div class="worlds-grid">
+            {% set worlds = [
+                {'name': 'Venture Explorer', 'desc': 'Le vaisseau de départ, premier pas vers l\'aventure', 'color': '#0066CC'},
+                {'name': 'Avant Gardens', 'desc': 'Les jardins luxuriants envahis par le Maelstrom', 'color': '#00AA44'},
+                {'name': 'Nimbus Station', 'desc': 'La ville dans les nuages, carrefour des héros', 'color': '#FF6600'},
+                {'name': 'Pet Cove', 'desc': 'L\'île des créatures apprivoisables', 'color': '#FF44AA'},
+                {'name': 'Gnarled Forest', 'desc': 'La forêt tortueuse des pirates', 'color': '#884400'},
+                {'name': 'Forbidden Valley', 'desc': 'La vallée interdite des ninjas', 'color': '#6600CC'},
+                {'name': 'Nexus Tower', 'desc': 'Le quartier général de la Nexus Force', 'color': '#0088FF'},
+                {'name': 'Crux Prime', 'desc': 'Le cœur du Maelstrom, monde final', 'color': '#CC0000'}
+            ] %}
+            {% for world in worlds %}
+            <div class="world-card" style="--world-color: {{ world.color }}">
+                <div class="world-image-placeholder">
+                    <div class="world-icon">🧱</div>
+                </div>
+                <div class="world-info">
+                    <h3 class="world-name">{{ world.name }}</h3>
+                    <p class="world-desc">{{ world.desc }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- ACTUALITÉS -->
+<section class="news-section" id="news">
+    <div class="section-container">
+        <div class="section-header">
+            <h2 class="section-title">DERNIÈRES <span class="text-glow">ACTUALITÉS</span></h2>
+        </div>
+        <div class="news-grid">
+            {% if latest_news %}
+                {% for article in latest_news %}
+                <a href="{{ url_for('news.detail', slug=article.slug) }}" class="news-card">
+                    <div class="news-card-image">
+                        {% if article.cover_image %}
+                            <img src="{{ url_for('static', filename='uploads/' + article.cover_image) }}" alt="{{ article.title }}">
+                        {% else %}
+                            <div class="news-placeholder"><span>{{ article.category }}</span></div>
+                        {% endif %}
+                    </div>
+                    <div class="news-card-body">
+                        <span class="news-category">{{ article.category }}</span>
+                        <h3 class="news-title">{{ article.title }}</h3>
+                        <p class="news-excerpt">{{ article.excerpt or article.content[:150] ~ '...' }}</p>
+                        <div class="news-meta">
+                            <span>{{ article.author.username }}</span>
+                            <span>{{ article.published_at.strftime('%d/%m/%Y') if article.published_at else '' }}</span>
+                        </div>
+                    </div>
+                </a>
+                {% endfor %}
+            {% else %}
+                <p class="no-content">Aucune actualité pour le moment. Revenez bientôt !</p>
+            {% endif %}
+        </div>
+        <div class="section-cta">
+            <a href="{{ url_for('news.index') }}" class="btn-secondary">TOUT VOIR</a>
+        </div>
+    </div>
+</section>
+
+<!-- DISCORD -->
+<section class="discord-section" id="discord">
+    <div class="section-container">
+        <div class="discord-card">
+            <div class="discord-icon">💬</div>
+            <h2>REJOIGNEZ NOTRE <span class="text-glow">DISCORD</span></h2>
+            <p>Rejoignez notre communauté Discord pour discuter avec d'autres joueurs, obtenir de l'aide et rester informé des dernières actualités.</p>
+            <a href="#" class="btn-discord" id="discord-btn">REJOINDRE LE DISCORD</a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/counters.js') }}"></script>
+<script src="{{ url_for('static', filename='js/status.js') }}"></script>
+{% endblock %}

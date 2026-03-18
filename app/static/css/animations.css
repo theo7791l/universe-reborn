@@ -1,0 +1,98 @@
+/* =============================================
+   UNIVERSE REBORN — Animations CSS
+   ============================================= */
+
+/* Entrées */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+@keyframes scaleIn {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+}
+@keyframes slideInRight {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+/* Glow pulsant */
+@keyframes glowPulse {
+    0%, 100% { text-shadow: 0 0 20px rgba(0, 102, 204, 0.5), 0 0 40px rgba(0, 102, 204, 0.3); }
+    50% { text-shadow: 0 0 30px rgba(0, 136, 255, 0.8), 0 0 60px rgba(0, 102, 204, 0.5), 0 0 80px rgba(102, 0, 204, 0.3); }
+}
+
+/* Maelstrom rotate */
+@keyframes maelstromRotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Float */
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+/* Shimmer */
+@keyframes shimmer {
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
+}
+
+/* Classes utilitaires */
+.animate-fadeInUp { animation: fadeInUp 0.6s ease forwards; }
+.animate-fadeIn { animation: fadeIn 0.6s ease forwards; }
+.animate-scaleIn { animation: scaleIn 0.4s ease forwards; }
+.animate-float { animation: float 3s ease-in-out infinite; }
+.animate-glowPulse { animation: glowPulse 3s ease-in-out infinite; }
+
+/* Délais */
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.2s; }
+.delay-3 { animation-delay: 0.3s; }
+.delay-4 { animation-delay: 0.4s; }
+.delay-5 { animation-delay: 0.5s; }
+
+/* Scroll reveal (classe ajoutée via JS) */
+.reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+.reveal-left {
+    opacity: 0;
+    transform: translateX(-30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal-left.visible { opacity: 1; transform: translateX(0); }
+.reveal-right {
+    opacity: 0;
+    transform: translateX(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal-right.visible { opacity: 1; transform: translateX(0); }
+
+/* Titre hero animé */
+.hero-title .title-universe {
+    animation: fadeInDown 0.8s ease 0.3s both, glowPulse 4s ease-in-out 1.5s infinite;
+}
+.hero-title .title-reborn {
+    animation: fadeInUp 0.8s ease 0.5s both;
+}
+.hero-subtitle { animation: fadeIn 0.8s ease 0.8s both; }
+.hero-cta { animation: fadeInUp 0.8s ease 1s both; }
+.hero-stats { animation: fadeInUp 0.8s ease 1.2s both; }
+.hero-badge { animation: scaleIn 0.5s ease 0.1s both; }

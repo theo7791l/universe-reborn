@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}Connexion — Universe Reborn{% endblock %}
+{% block body_class %}panel-page{% endblock %}
+
+{% block content %}
+<section class="auth-section">
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h1>CONNEXION</h1>
+                <p>Bon retour, héros !</p>
+            </div>
+            <form method="POST" action="{{ url_for('accounts.login') }}" class="auth-form">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="form-group">
+                    <label for="username">Pseudo</label>
+                    <input type="text" id="username" name="username" required placeholder="Votre pseudo" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label for="password">Mot de passe</label>
+                    <input type="password" id="password" name="password" required placeholder="••••••••" class="form-input">
+                </div>
+                <div class="form-group form-check">
+                    <input type="checkbox" id="remember" name="remember">
+                    <label for="remember">Se souvenir de moi</label>
+                </div>
+                <button type="submit" class="btn-primary btn-full btn-glow">SE CONNECTER</button>
+            </form>
+            <div class="auth-footer">
+                <p>Pas encore de compte ? <a href="{{ url_for('accounts.register') }}">Créer un compte</a></p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
