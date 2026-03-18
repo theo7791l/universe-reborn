@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}Actualités — Admin Universe Reborn{% endblock %}
+{% block body_class %}panel-page{% endblock %}
+{% block content %}
+<section class="dashboard-section">
+  <div class="dashboard-container">
+    <div class="dashboard-header">
+      <a href="{{ url_for('admin.index') }}" class="back-link">← Admin</a>
+      <h1>📰 GESTION DES <span class="text-glow">ACTUALITÉS</span></h1>
+      <a href="{{ url_for('admin.news_create') }}" class="btn-primary" style="margin-top:1rem">➕ Nouvel article</a>
+    </div>
+    <div class="dashboard-card reveal">
+      <div class="table-wrapper">
+        <table class="admin-table">
+          <thead><tr><th>Titre</th><th>Catégorie</th><th>Statut</th><th>Publié le</th><th>Actions</th></tr></thead>
+          <tbody>
+            {% for article in articles %}
+            <tr>
+              <td><strong>{{ article.title }}</strong></td>
+              <td><span class="news-category">{{ article.category }}</span></td>
+              <td>{% if article.is_published %}<span class="badge-success">Publié</span>{% else %}<span class="badge-danger">Brouillon</span>{% endif %}</td>
+              <td>{{ article.published_at.strftime('%d/%m/%Y') if article.published_at else '—' }}</td>
+              <td class="actions-cell">
+                <a href="{{ url_for('admin.news_edit', article_id=article.id) }}" class="btn-action btn-success">✏️</a>
+                <form method="POST" action="{{ url_for('admin.news_delete', article_id=article.id) }}" onsubmit="return confirm('Supprimer cet article ?')" style="display:inline">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                  <button type="submit" class="btn-action btn-danger">🗑️</button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}{{ 'Modifier' if article else 'Créer' }} un article — Admin{% endblock %}
+{% block body_class %}panel-page{% endblock %}
+{% block content %}
+<section class="dashboard-section">
+  <div class="dashboard-container">
+    <div class="dashboard-header">
+      <a href="{{ url_for('admin.news_list') }}" class="back-link">← Actualités</a>
+      <h1>{{ '✏️ Modifier' if article else '➕ Nouvel' }} <span class="text-glow">ARTICLE</span></h1>
+    </div>
+    {% if error %}<div class="flash flash-danger"><span>{{ error }}</span></div>{% endif %}
+    <div class="dashboard-card reveal">
+      <form method="POST" class="auth-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="form-group">
+          <label>Titre</label>
+          <input type="text" name="title" class="form-input" value="{{ article.title if article else '' }}" required>
+        </div>
+        <div class="form-group">
+          <label>Catégorie</label>
+          <select name="category" class="form-input">
+            {% for cat in ['Actualité', 'Mise à jour', 'Maintenance', 'Communauté', 'Guide'] %}
+            <option value="{{ cat }}" {{ 'selected' if (article and article.category == cat) }}>{{ cat }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Résumé (optionnel, 500 car. max)</label>
+          <textarea name="excerpt" class="form-input" rows="2" maxlength="500">{{ article.excerpt if article else '' }}</textarea>
+        </div>
+        <div class="form-group">
+          <label>Contenu (HTML autorisé)</label>
+          <textarea name="content" class="form-input" rows="12" required style="resize:vertical">{{ article.content if article else '' }}</textarea>
+        </div>
+        <div class="form-group" style="flex-direction:row; align-items:center; gap:0.75rem">
+          <input type="checkbox" name="publish" id="publish" {{ 'checked' if (article and article.is_published) }}>
+          <label for="publish" style="margin:0; cursor:pointer">Publier immédiatement</label>
+        </div>
+        <button type="submit" class="btn-primary">{{ 'METTRE À JOUR' if article else 'PUBLIER' }}</button>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}

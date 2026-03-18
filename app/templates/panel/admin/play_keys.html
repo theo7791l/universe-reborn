@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}Play Keys — Admin Universe Reborn{% endblock %}
+{% block body_class %}panel-page{% endblock %}
+{% block content %}
+<section class="dashboard-section">
+  <div class="dashboard-container">
+    <div class="dashboard-header">
+      <a href="{{ url_for('admin.index') }}" class="back-link">← Admin</a>
+      <h1>🔑 PLAY <span class="text-glow">KEYS</span></h1>
+    </div>
+    <!-- Génération -->
+    <div class="dashboard-card reveal" style="margin-bottom:2rem">
+      <h2>Générer des clés</h2>
+      <form method="POST" action="{{ url_for('admin.generate_play_key') }}" class="inline-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nombre de clés</label>
+            <input type="number" name="count" value="1" min="1" max="50" class="form-input" style="width:100px">
+          </div>
+          <div class="form-group">
+            <label>Utilisations par clé</label>
+            <input type="number" name="uses" value="1" min="1" max="100" class="form-input" style="width:100px">
+          </div>
+          <div class="form-group" style="flex:1">
+            <label>Notes (optionnel)</label>
+            <input type="text" name="notes" class="form-input" placeholder="Ex: Discord giveaway">
+          </div>
+          <div class="form-group" style="align-self:flex-end">
+            <button type="submit" class="btn-primary">➕ Générer</button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <!-- Liste -->
+    <div class="dashboard-card reveal">
+      <h2>Clés existantes ({{ keys|length }})</h2>
+      <div class="table-wrapper">
+        <table class="admin-table">
+          <thead><tr><th>Clé</th><th>Utilisations</th><th>Statut</th><th>Notes</th><th>Créée le</th><th>Action</th></tr></thead>
+          <tbody>
+            {% for key in keys %}
+            <tr>
+              <td><code style="font-size:0.85rem">{{ key.key_string }}</code></td>
+              <td>{{ key.uses_remaining }} / {{ key.uses_total }}</td>
+              <td>{% if key.is_active %}<span class="badge-success">Active</span>{% else %}<span class="badge-danger">Épuisée</span>{% endif %}</td>
+              <td>{{ key.notes or '—' }}</td>
+              <td>{{ key.created_at.strftime('%d/%m/%Y') }}</td>
+              <td>
+                <form method="POST" action="{{ url_for('admin.delete_play_key', key_id=key.id) }}" onsubmit="return confirm('Supprimer cette clé ?')">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                  <button type="submit" class="btn-action btn-danger">🗑️</button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

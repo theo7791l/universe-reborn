@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block title %}Rapports de bugs — Admin{% endblock %}
+{% block body_class %}panel-page{% endblock %}
+{% block content %}
+<section class="dashboard-section">
+  <div class="dashboard-container">
+    <div class="dashboard-header">
+      <a href="{{ url_for('admin.index') }}" class="back-link">← Admin</a>
+      <h1>🐛 RAPPORTS DE <span class="text-glow">BUGS</span></h1>
+    </div>
+    <div class="gallery-filters reveal" style="margin-bottom:1.5rem">
+      <a href="?status=open" class="filter-btn {{ 'active' if status == 'open' }}">Ouverts</a>
+      <a href="?status=in_progress" class="filter-btn {{ 'active' if status == 'in_progress' }}">En cours</a>
+      <a href="?status=closed" class="filter-btn {{ 'active' if status == 'closed' }}">Fermés</a>
+    </div>
+    <div class="dashboard-card reveal">
+      {% for report in reports %}
+      <div class="bug-report-item">
+        <div class="bug-report-header">
+          <strong>{{ report.title }}</strong>
+          <span class="badge-{{ 'danger' if report.status == 'open' else ('warning' if report.status == 'in_progress' else 'success') }}">{{ report.status }}</span>
+        </div>
+        <p style="color: var(--color-text-muted); font-size:0.9rem; margin: 0.5rem 0">{{ report.description[:300] }}{% if report.description|length > 300 %}...{% endif %}</p>
+        <div style="display:flex; gap:1rem; align-items:center; margin-top:0.75rem">
+          <span style="font-size:0.8rem; color:var(--color-text-dim)">Par #{{ report.user_id }} — {{ report.created_at.strftime('%d/%m/%Y') }}</span>
+          <form method="POST" action="{{ url_for('admin.update_bug_status', report_id=report.id) }}" style="display:flex; gap:0.5rem">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <select name="status" class="form-input" style="padding:0.25rem 0.5rem; font-size:0.8rem; width:auto">
+              <option value="open" {{ 'selected' if report.status=='open' }}>Ouvert</option>
+              <option value="in_progress" {{ 'selected' if report.status=='in_progress' }}>En cours</option>
+              <option value="closed" {{ 'selected' if report.status=='closed' }}>Fermé</option>
+            </select>
+            <button type="submit" class="btn-action btn-success">OK</button>
+          </form>
+        </div>
+      </div>
+      {% else %}
+      <p style="color:var(--color-text-muted); text-align:center; padding:2rem">Aucun rapport dans cette catégorie.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,61 +1,72 @@
 {% extends 'base.html' %}
-{% block title %}Mon Espace — Universe Reborn{% endblock %}
+{% block title %}Dashboard — Universe Reborn{% endblock %}
 {% block body_class %}panel-page{% endblock %}
-
 {% block content %}
+
 <section class="dashboard-section">
     <div class="dashboard-container">
         <div class="dashboard-header">
-            <h1>Bienvenue, <span class="text-glow">{{ current_user.username }}</span> !</h1>
-            <p>Dernière connexion : {{ current_user.last_login.strftime('%d/%m/%Y à %H:%M') if current_user.last_login else 'Première connexion' }}</p>
+            <h1>🧱 BIENVENUE, <span class="text-glow">{{ current_user.username }}</span></h1>
+            <p>Gérez vos personnages et votre compte Universe Reborn</p>
         </div>
 
-        <div class="dashboard-grid">
-            <!-- Mes personnages -->
-            <div class="dashboard-card card-wide">
-                <h2>🎮 Mes Personnages</h2>
-                {% if characters %}
-                <div class="characters-list">
-                    {% for char in characters %}
-                    <a href="{{ url_for('characters.detail', char_id=char.id) }}" class="character-item">
-                        <div class="char-avatar">🧱</div>
-                        <div class="char-info">
-                            <span class="char-name">{{ char.name }}</span>
-                            <span class="char-level">Niveau {{ char.level }}</span>
-                            <span class="char-zone">{{ char.current_zone }}</span>
-                        </div>
-                        <div class="char-score">{{ char.universe_score }} pts</div>
-                    </a>
-                    {% endfor %}
-                </div>
-                {% else %}
-                <p class="no-content">Aucun personnage pour l'instant. Connectez-vous au jeu pour créer votre personnage !</p>
-                {% endif %}
-            </div>
+        {% if current_user.darkflame_account_id %}
 
-            <!-- Infos compte -->
-            <div class="dashboard-card">
-                <h2>👤 Mon Compte</h2>
-                <ul class="info-list">
-                    <li><span>Pseudo</span><strong>{{ current_user.username }}</strong></li>
-                    <li><span>Email</span><strong>{{ current_user.email }}</strong></li>
-                    <li><span>Membre depuis</span><strong>{{ current_user.created_at.strftime('%d/%m/%Y') }}</strong></li>
-                    <li><span>Personnages</span><strong>{{ characters|length }}</strong></li>
-                </ul>
-                <a href="{{ url_for('accounts.settings') }}" class="btn-secondary btn-sm">Gérer mon compte</a>
-            </div>
-
-            <!-- Liens rapides -->
-            <div class="dashboard-card">
-                <h2>🔗 Liens Rapides</h2>
-                <div class="quick-links">
-                    <a href="{{ url_for('vitrine.guide') }}" class="quick-link">📖 Guide de jeu</a>
-                    <a href="{{ url_for('vitrine.leaderboard') }}" class="quick-link">🏆 Classements</a>
-                    <a href="{{ url_for('news.index') }}" class="quick-link">📰 Actualités</a>
-                    <a href="{{ url_for('moderation.report_bug') }}" class="quick-link">🐛 Signaler un bug</a>
+        <!-- Personnages -->
+        <h2 class="section-title reveal">MES <span class="text-glow">PERSONNAGES</span></h2>
+        {% if characters %}
+        <div class="characters-grid">
+            {% for char in characters %}
+            <div class="character-card reveal">
+                <div class="char-avatar">🧱</div>
+                <div class="char-info">
+                    <h3 class="char-name">{{ char.name }}</h3>
+                    <span class="char-zone">🌍 {{ char.zone_name }}</span>
+                    <div class="char-meta">
+                        <span>Dernière connexion : {{ char.last_login.strftime('%d/%m/%Y') if char.last_login else 'Jamais' }}</span>
+                    </div>
                 </div>
             </div>
+            {% endfor %}
         </div>
+        {% else %}
+        <div class="empty-state small">
+            <p>Aucun personnage trouvé. Lancez LEGO Universe pour en créer un !</p>
+            <a href="{{ url_for('vitrine.guide') }}" class="btn-secondary">Voir le guide</a>
+        </div>
+        {% endif %}
+
+        {% else %}
+        <!-- Compte non lié à DarkflameServer -->
+        <div class="dashboard-card card-wide reveal">
+            <h2>🔗 Lier votre compte DarkflameServer</h2>
+            <p>Votre compte Universe Reborn n'est pas encore lié à un compte de jeu. Suivez le guide pour configurer LEGO Universe et créer votre personnage.</p>
+            <a href="{{ url_for('vitrine.guide') }}" class="btn-primary" style="display:inline-block; margin-top:1rem">VOIR LE GUIDE</a>
+        </div>
+        {% endif %}
+
+        <!-- Actions rapides -->
+        <div class="dashboard-grid" style="margin-top: 3rem">
+            <a href="{{ url_for('accounts.settings') }}" class="dashboard-card dashboard-card-link reveal">
+                <h3>⚙️ Paramètres</h3>
+                <p>Modifier votre mot de passe et vos informations</p>
+            </a>
+            <a href="{{ url_for('moderation.report_bug') }}" class="dashboard-card dashboard-card-link reveal delay-1">
+                <h3>🐛 Signaler un bug</h3>
+                <p>Aider à améliorer Universe Reborn</p>
+            </a>
+            <a href="{{ url_for('news.index') }}" class="dashboard-card dashboard-card-link reveal delay-2">
+                <h3>📰 Actualités</h3>
+                <p>Dernières nouvelles du serveur</p>
+            </a>
+            {% if current_user.is_admin %}
+            <a href="{{ url_for('admin.index') }}" class="dashboard-card dashboard-card-link reveal delay-3" style="border-color: var(--color-maelstrom)">
+                <h3>🛡️ Panel Admin</h3>
+                <p>Gérer le serveur et les joueurs</p>
+            </a>
+            {% endif %}
+        </div>
+
     </div>
 </section>
 {% endblock %}

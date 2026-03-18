@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}Erreur serveur — Universe Reborn{% endblock %}
+{% block content %}
+<section class="error-section">
+    <div class="error-container">
+        <div class="error-code" style="color: var(--color-maelstrom)">500</div>
+        <h1 class="error-title">Erreur serveur</h1>
+        <p class="error-desc">Une erreur interne est survenue. L'équipe a été notifiée.</p>
+        <a href="{{ url_for('vitrine.index') }}" class="btn-primary">RETOUR À L'ACCUEIL</a>
+    </div>
+</section>
+{% endblock %}
