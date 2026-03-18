@@ -1,7 +1,16 @@
 import os
 from app import create_app
 
-app = create_app(os.environ.get('FLASK_ENV', 'production'))
+# Détection automatique de l'environnement
+env = os.environ.get('FLASK_ENV', 'production')
+
+app = create_app(env)
 
 if __name__ == '__main__':
-    app.run()
+    port = int(os.environ.get('PORT', 8000))
+    debug = env == 'development'
+    app.run(
+        host='0.0.0.0',
+        port=port,
+        debug=debug
+    )

@@ -1,0 +1,84 @@
+{
+  "_comment": "Egg Pterodactyl custom pour Universe Reborn (Flask/Python)",
+  "meta": {
+    "version": "PTDL_v2",
+    "update_url": null
+  },
+  "exported_at": "2026-03-18T00:00:00+00:00",
+  "name": "Universe Reborn — Site Web",
+  "author": "admin@universe-reborn.fr",
+  "uuid": "00000000-0000-0000-0000-000000000001",
+  "description": "Site communautaire Universe Reborn bas\u00e9 sur Flask (Python 3). D\u00e9marrage via Gunicorn sur le port configurable.",
+  "features": ["eula"],
+  "docker_images": {
+    "Python 3.11": "ghcr.io/pterodactyl/yolks:python_3.11",
+    "Python 3.12": "ghcr.io/pterodactyl/yolks:python_3.12"
+  },
+  "file_denylist": [],
+  "startup": "bash start.sh",
+  "config": {
+    "files": "{}",
+    "startup": "{\"done\": \"Booting worker\"}",
+    "logs": "{}",
+    "stop": "^C"
+  },
+  "scripts": {
+    "installation": {
+      "script": "#!/bin/bash\napt-get update -y && apt-get install -y git\ncd /mnt/server\ngit clone https://github.com/theo7791l/universe-reborn.git . || git pull\npip install --upgrade pip\npip install -r requirements.txt\nif [ ! -f .env ]; then\n  cp .env.example .env\n  echo \"[WARN] .env cr\u00e9\u00e9 depuis .env.example — configurez les variables !\"\nfi",
+      "container": "ghcr.io/pterodactyl/installers:debian",
+      "entrypoint": "bash"
+    }
+  },
+  "variables": [
+    {
+      "name": "Port",
+      "description": "Port d'\u00e9coute de Gunicorn",
+      "env_variable": "PORT",
+      "default_value": "8000",
+      "user_viewable": true,
+      "user_editable": false,
+      "rules": "required|numeric|between:1024,65535",
+      "field_type": "text"
+    },
+    {
+      "name": "Flask ENV",
+      "description": "Environnement Flask : production ou development",
+      "env_variable": "FLASK_ENV",
+      "default_value": "production",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "required|in:production,development",
+      "field_type": "text"
+    },
+    {
+      "name": "Workers Gunicorn",
+      "description": "Nombre de workers Gunicorn (recommand\u00e9 : 2 ou 4)",
+      "env_variable": "GUNICORN_WORKERS",
+      "default_value": "2",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "required|numeric|between:1,16",
+      "field_type": "text"
+    },
+    {
+      "name": "Secret Key",
+      "description": "Cl\u00e9 secr\u00e8te Flask (g\u00e9n\u00e9rez une cl\u00e9 al\u00e9atoire forte)",
+      "env_variable": "SECRET_KEY",
+      "default_value": "changeme-please-set-a-real-secret",
+      "user_viewable": false,
+      "user_editable": true,
+      "rules": "required|string|min:32",
+      "field_type": "text"
+    },
+    {
+      "name": "Database URL",
+      "description": "URL de connexion SQLAlchemy (ex: mysql+pymysql://user:pass@host/db ou sqlite:///data.db)",
+      "env_variable": "DATABASE_URL",
+      "default_value": "sqlite:///universe_reborn.db",
+      "user_viewable": false,
+      "user_editable": true,
+      "rules": "required|string",
+      "field_type": "text"
+    }
+  ]
+}
