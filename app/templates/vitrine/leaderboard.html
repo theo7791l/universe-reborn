@@ -19,6 +19,7 @@
                     <th>Niveau</th>
                     <th>Score Univers</th>
                     <th>Zone actuelle</th>
+                    <th>Dernière connexion</th>
                 </tr>
             </thead>
             <tbody>
@@ -36,15 +37,32 @@
                             <span class="char-icon">🧱</span>
                             <strong>{{ char.name }}</strong>
                         </td>
-                        <td><span class="level-badge">Niv. {{ char.level }}</span></td>
-                        <td><span class="score-value">{{ '{:,}'.format(char.universe_score).replace(',', ' ') }}</span></td>
+                        <td>
+                            {% if char.level and char.level > 0 %}
+                                <span class="level-badge">Niv. {{ char.level }}</span>
+                            {% else %}
+                                <span class="level-badge">Niv. —</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if char.universe_score and char.universe_score > 0 %}
+                                <span class="score-value">{{ '{:,}'.format(char.universe_score | int).replace(',', ' ') }}</span>
+                            {% else %}
+                                <span class="score-value" style="opacity:0.4">—</span>
+                            {% endif %}
+                        </td>
                         <td><span class="zone-tag">{{ char.current_zone }}</span></td>
+                        <td><span style="color: var(--color-text-dim); font-size: 0.85rem;">
+                            {% if char.last_login %}
+                                {{ char.last_login.strftime('%d/%m/%Y') if char.last_login.strftime is defined else char.last_login }}
+                            {% else %}—{% endif %}
+                        </span></td>
                     </tr>
                     {% endfor %}
                 {% else %}
                 <tr>
-                    <td colspan="5" class="no-content" style="text-align:center; padding: 3rem">
-                        Aucun joueur classé pour le moment. Soyez le premier !
+                    <td colspan="6" class="no-content" style="text-align:center; padding: 3rem">
+                        Aucun joueur classé pour le moment. Soyez le premier !
                     </td>
                 </tr>
                 {% endif %}
