@@ -1,9 +1,9 @@
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
-import { useEffect } from 'react'
+import { useEffect, Component } from 'react'
 
-import Navbar    from './components/Navbar.jsx'
-import Footer    from './components/Footer.jsx'
-import StarField from './components/StarField.jsx'
+import Navbar     from './components/Navbar.jsx'
+import Footer     from './components/Footer.jsx'
+import StarField  from './components/StarField.jsx'
 
 import Home        from './pages/Home.jsx'
 import About       from './pages/About.jsx'
@@ -17,7 +17,28 @@ import Register    from './pages/Register.jsx'
 import Legal       from './pages/Legal.jsx'
 import NotFound    from './pages/NotFound.jsx'
 
-// Scroll en haut a chaque changement de route
+class ErrorBoundary extends Component {
+  constructor(props) {
+    super(props)
+    this.state = { hasError: false, error: null }
+  }
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error }
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ color: 'red', padding: '2rem', fontFamily: 'monospace', background: '#0a0a14', minHeight: '100vh' }}>
+          <h1>Erreur React</h1>
+          <pre>{String(this.state.error)}</pre>
+          <pre>{this.state.error?.stack}</pre>
+        </div>
+      )
+    }
+    return this.props.children
+  }
+}
+
 function ScrollToTop() {
   const { pathname } = useLocation()
   useEffect(() => { window.scrollTo(0, 0) }, [pathname])
@@ -52,8 +73,10 @@ function Layout() {
 
 export default function App() {
   return (
-    <BrowserRouter basename="/universe-reborn">
-      <Layout />
-    </BrowserRouter>
+    <ErrorBoundary>
+      <BrowserRouter>
+        <Layout />
+      </BrowserRouter>
+    </ErrorBoundary>
   )
 }
