@@ -12,9 +12,25 @@ def server_status():
         with db.engine.connect() as conn:
             total = conn.execute(db.text("SELECT COUNT(*) FROM accounts")).fetchone()[0]
             chars = conn.execute(db.text("SELECT COUNT(*) FROM charinfo")).fetchone()[0]
-        return jsonify({'online': True, 'accounts': total, 'characters': chars})
+            # Joueurs en ligne = logins sans logout dans les 10 dernières minutes
+            cutoff = int(time.time()) - 600
+            players_online = conn.execute(db.text(
+                "SELECT COUNT(*) FROM activity_log al "
+                "WHERE al.activity=0 AND al.time > :t "
+                "AND NOT EXISTS ("
+                "  SELECT 1 FROM activity_log al2 "
+                "  WHERE al2.character_id=al.character_id "
+                "  AND al2.activity=1 AND al2.time > al.time"
+                ")"
+            ), {'t': cutoff}).fetchone()[0]
+        return jsonify({
+            'online': True,
+            'accounts': total,
+            'characters': chars,
+            'players_online': players_online
+        })
     except Exception as e:
-        return jsonify({'online': False, 'error': str(e)})
+        return jsonify({'online': False, 'error': str(e), 'players_online': 0})
 
 
 @api_bp.route('/online-players')
