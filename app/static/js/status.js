@@ -3,32 +3,41 @@
  * Appelle l'API /api/status toutes les 30 secondes
  */
 (function() {
-    const badge = document.getElementById('server-status-badge');
-    const statusText = document.getElementById('status-text');
-    const statusDot = document.getElementById('status-dot');
-    const playersOnline = document.getElementById('players-online');
+    var badge        = document.getElementById('server-status-badge');
+    var statusText   = document.getElementById('status-text');
+    var statusDot    = document.getElementById('status-dot');
+    var playersOnline = document.getElementById('players-online');
 
     if (!badge || !statusText) return;
 
+    function setAllZeroOnline() {
+        if (playersOnline) playersOnline.textContent = '0';
+        document.querySelectorAll('[data-zone]').forEach(function(el) {
+            el.textContent = '0';
+        });
+    }
+
     function updateStatus() {
         fetch('/api/status')
-            .then(res => res.json())
-            .then(data => {
+            .then(function(res) { return res.json(); })
+            .then(function(data) {
                 if (data.online) {
                     badge.classList.remove('offline');
-                    statusText.textContent = `SERVEUR EN LIGNE${data.players_online > 0 ? ' — ' + data.players_online + ' JOUEURS' : ''}`;
+                    var count = typeof data.players_online === 'number' ? data.players_online : 0;
+                    statusText.textContent = 'SERVEUR EN LIGNE' + (count > 0 ? ' — ' + count + ' JOUEUR' + (count > 1 ? 'S' : '') : '');
                     if (statusDot) statusDot.style.background = 'var(--color-success)';
+                    if (playersOnline) playersOnline.textContent = count;
                 } else {
                     badge.classList.add('offline');
                     statusText.textContent = 'SERVEUR HORS LIGNE';
                     if (statusDot) statusDot.style.background = 'var(--color-danger)';
-                }
-                if (playersOnline && data.players_online !== undefined) {
-                    playersOnline.textContent = data.players_online;
+                    // Serveur éteint : tous les compteurs à 0
+                    setAllZeroOnline();
                 }
             })
-            .catch(() => {
+            .catch(function() {
                 statusText.textContent = 'STATUT INCONNU';
+                setAllZeroOnline();
             });
     }
 
