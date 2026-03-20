@@ -13,7 +13,7 @@ def server_status():
             total = conn.execute(db.text("SELECT COUNT(*) FROM accounts")).fetchone()[0]
             chars = conn.execute(db.text("SELECT COUNT(*) FROM charinfo")).fetchone()[0]
         return jsonify({'online': True, 'total_users': total, 'total_characters': chars, 'players_online': 0})    except Exception as e:
-        return jsonify({'online': False, 'error': str(e)})
+        return jsonify({'online': False, 'error': str(e), 'total_users': 0, 'total_characters': 0, 'players_online': 0})
 
 
 @api_bp.route('/online-players')
