@@ -50,25 +50,26 @@
             <h2 class="section-title">EXPLOREZ LES <span class="text-glow">MONDES</span></h2>
             <p class="section-subtitle">Voyagez à travers les différents mondes de LEGO® Universe</p>
         </div>
-        <div class="worlds-grid">
+        <div class="worlds-grid" id="worlds-grid">
             {% set worlds = [
-                {'name': 'Venture Explorer', 'desc': 'Le vaisseau de départ, premier pas vers l\'aventure', 'color': '#0066CC'},
-                {'name': 'Avant Gardens', 'desc': 'Les jardins luxuriants envahis par le Maelstrom', 'color': '#00AA44'},
-                {'name': 'Nimbus Station', 'desc': 'La ville dans les nuages, carrefour des héros', 'color': '#FF6600'},
-                {'name': 'Pet Cove', 'desc': 'L\'île des créatures apprivoisables', 'color': '#FF44AA'},
-                {'name': 'Gnarled Forest', 'desc': 'La forêt tortueuse des pirates', 'color': '#884400'},
-                {'name': 'Forbidden Valley', 'desc': 'La vallée interdite des ninjas', 'color': '#6600CC'},
-                {'name': 'Nexus Tower', 'desc': 'Le quartier général de la Nexus Force', 'color': '#0088FF'},
-                {'name': 'Crux Prime', 'desc': 'Le cœur du Maelstrom, monde final', 'color': '#CC0000'}
+                {'name': 'Venture Explorer', 'desc': 'Le vaisseau de départ, premier pas vers l\'aventure', 'color': '#0066CC', 'zone_id': 1000},
+                {'name': 'Avant Gardens',    'desc': 'Les jardins luxuriants envahis par le Maelstrom',   'color': '#00AA44', 'zone_id': 1100},
+                {'name': 'Nimbus Station',   'desc': 'La ville dans les nuages, carrefour des héros',      'color': '#FF6600', 'zone_id': 1200},
+                {'name': 'Pet Cove',         'desc': 'L\'île des créatures apprivoisables',                'color': '#FF44AA', 'zone_id': 1201},
+                {'name': 'Gnarled Forest',   'desc': 'La forêt tortueuse des pirates',                     'color': '#884400', 'zone_id': 1300},
+                {'name': 'Forbidden Valley', 'desc': 'La vallée interdite des ninjas',                     'color': '#6600CC', 'zone_id': 1400},
+                {'name': 'Nexus Tower',      'desc': 'Le quartier général de la Nexus Force',              'color': '#0088FF', 'zone_id': 1600},
+                {'name': 'Crux Prime',       'desc': 'Le cœur du Maelstrom, monde final',                 'color': '#CC0000', 'zone_id': 1800}
             ] %}
             {% for world in worlds %}
-            <div class="world-card" style="--world-color: {{ world.color }}">
+            <div class="world-card" style="--world-color: {{ world.color }}" data-zone-id="{{ world.zone_id }}">
                 <div class="world-image-placeholder">
                     <div class="world-icon">🧱</div>
                 </div>
                 <div class="world-info">
                     <h3 class="world-name">{{ world.name }}</h3>
                     <p class="world-desc">{{ world.desc }}</p>
+                    <span class="world-online"><span class="world-count" data-zone="{{ world.zone_id }}">0</span> en ligne</span>
                 </div>
             </div>
             {% endfor %}
@@ -98,7 +99,7 @@
                         <h3 class="news-title">{{ article.title }}</h3>
                         <p class="news-excerpt">{{ article.excerpt or article.content[:150] ~ '...' }}</p>
                         <div class="news-meta">
-                            <span>{{ article.author.username }}</span>
+                            <span>{{ article.author_name }}</span>
                             <span>{{ article.published_at.strftime('%d/%m/%Y') if article.published_at else '' }}</span>
                         </div>
                     </div>
@@ -130,4 +131,41 @@
 {% block extra_js %}
 <script src="{{ url_for('static', filename='js/counters.js') }}"></script>
 <script src="{{ url_for('static', filename='js/status.js') }}"></script>
+<script>
+/**
+ * Mise à jour des compteurs de joueurs par monde
+ * Appelle /api/online-players et distribue les counts par zone_id
+ */
+(function () {
+    function updateWorldCounts() {
+        fetch('/api/online-players')
+            .then(function (res) { return res.json(); })
+            .then(function (players) {
+                // Initialiser tous les compteurs à 0
+                document.querySelectorAll('[data-zone]').forEach(function (el) {
+                    el.textContent = '0';
+                });
+                // Compter par zone
+                var counts = {};
+                players.forEach(function (p) {
+                    var zoneKey = String(p.zone_id || '');
+                    counts[zoneKey] = (counts[zoneKey] || 0) + 1;
+                });
+                // Injecter dans les spans
+                document.querySelectorAll('[data-zone]').forEach(function (el) {
+                    var z = String(el.dataset.zone);
+                    el.textContent = counts[z] || '0';
+                });
+            })
+            .catch(function () {
+                document.querySelectorAll('[data-zone]').forEach(function (el) {
+                    el.textContent = '0';
+                });
+            });
+    }
+
+    updateWorldCounts();
+    setInterval(updateWorldCounts, 30000);
+})();
+</script>
 {% endblock %}
