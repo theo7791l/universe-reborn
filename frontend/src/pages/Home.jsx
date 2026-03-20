@@ -108,11 +108,8 @@ export default function Home() {
       <section className="py-16 border-y border-[#1e1e3a] bg-[#0d0d1a]/60">
         <div className="container-custom">
           <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-[#1e1e3a]">
-            <StatCard icon={Users}     value={1248} label="Joueurs inscrits" color="#8b5cf6" />
-            <StatCard icon={Gamepad2}  value={42}   label="En ligne"         color="#22c55e" />
-            <StatCard icon={Swords}    value={3721} label="Personnages"       color="#3b82f6" />
-            <StatCard icon={Clock}     value={8760} label="Heures d’uptime"   color="#f97316" />
-          </div>
+            <StatCard icon={Users}      value={0}     label="Joueurs inscrits"  color="#8D5CF6" />            <StatCard icon={Gamepad2}  value={42}   label="En ligne"         color="#22c55e" />
+            <StatCard icon={Swords}    value={0}     label="Personnages"        color="#3B82F6" />          </div>
         </div>
       </section>
 
