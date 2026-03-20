@@ -18,7 +18,7 @@ def index():
         total_accounts = 0
         total_chars = 0
     return render_template('vitrine/index.html', articles=articles,
-                           total_accounts=total_accounts, total_chars=total_chars)
+                           total_total_users=total_accounts, total_characters=total_chars)
 
 
 @vitrine_bp.route('/about')
