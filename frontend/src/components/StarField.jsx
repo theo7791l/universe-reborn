@@ -5,7 +5,9 @@ export default function StarField() {
 
   useEffect(() => {
     const canvas = canvasRef.current
+    if (!canvas) return
     const ctx = canvas.getContext('2d')
+    if (!ctx) return
     let animId
 
     const STAR_COUNT = 180
@@ -48,13 +50,18 @@ export default function StarField() {
     resize()
     initStars()
     draw()
-
     window.addEventListener('resize', () => { resize(); initStars() })
+
     return () => {
       cancelAnimationFrame(animId)
       window.removeEventListener('resize', resize)
     }
   }, [])
 
-  return <canvas ref={canvasRef} id="starfield-canvas" />
+  return (
+    <canvas
+      ref={canvasRef}
+      className="fixed inset-0 pointer-events-none z-0"
+    />
+  )
 }
