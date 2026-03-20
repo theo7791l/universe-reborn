@@ -255,6 +255,39 @@ code { background: rgba(0,102,204,0.15); border: 1px solid rgba(0,102,204,0.2); 
 .news-excerpt { font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.6; margin-bottom: 1rem; }
 .news-meta { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--color-text-dim); }
 
+/* WORLD ONLINE COUNTER (Bug #2 fix) */
+.world-info { display: flex; flex-direction: column; gap: 0.25rem; }
+.world-online {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-top: 0.5rem;
+    font-family: var(--font-ui);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-text-dim);
+    background: rgba(0,102,204,0.08);
+    border: 1px solid rgba(0,102,204,0.2);
+    border-radius: 999px;
+    padding: 0.15rem 0.6rem;
+    width: fit-content;
+}
+.world-online::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-success);
+    opacity: 0.7;
+}
+.world-count {
+    font-family: var(--font-title);
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--color-primary-light);
+}
+
 /* RESPONSIVE */
 @media (max-width: 768px) {
     .guide-step { flex-direction: column; gap: 1rem; }
