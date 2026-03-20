@@ -1,0 +1,273 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@700;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =============================================
+   VARIABLES CSS GLOBALES
+   ============================================= */
+:root {
+  --bg-primary:    #0a0a14;
+  --bg-secondary:  #0d0d1a;
+  --bg-card:       #12121f;
+  --bg-card-hover: #1a1a2e;
+  --border-base:   #1e1e3a;
+  --violet:        #7c3aed;
+  --violet-light:  #8b5cf6;
+  --blue-accent:   #3b82f6;
+  --orange-accent: #f97316;
+  --green-status:  #22c55e;
+  --gold:          #eab308;
+  --text-muted:    #9ca3af;
+  --text-light:    #d1d5db;
+}
+
+/* =============================================
+   RESET & BASE
+   ============================================= */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: #ffffff;
+  font-family: 'Inter', sans-serif;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* =============================================
+   SCROLLBAR CUSTOM
+   ============================================= */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--violet);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--violet-light);
+}
+
+/* =============================================
+   CANVAS STARFIELD (fond)
+   ============================================= */
+#starfield-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Tout le contenu passe au-dessus du canvas */
+.relative, main, header, footer, nav {
+  position: relative;
+  z-index: 1;
+}
+
+/* =============================================
+   ANIMATIONS
+   ============================================= */
+
+/* Pulse pour le badge statut serveur */
+@keyframes statusPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.6; transform: scale(1.3); }
+}
+.animate-status-pulse {
+  animation: statusPulse 1.8s ease-in-out infinite;
+}
+
+/* Glow violet sur les boutons primaires */
+@keyframes violetGlow {
+  0%, 100% { box-shadow: 0 0 8px rgba(124, 58, 237, 0.4); }
+  50%       { box-shadow: 0 0 20px rgba(124, 58, 237, 0.8); }
+}
+.btn-glow {
+  animation: violetGlow 2.5s ease-in-out infinite;
+}
+
+/* Fade-in depuis le bas */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+/* Apparition legere */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* Timeline accordion expand */
+@keyframes expandDown {
+  from { max-height: 0; opacity: 0; }
+  to   { max-height: 500px; opacity: 1; }
+}
+.animate-expand {
+  animation: expandDown 0.35s ease-out forwards;
+  overflow: hidden;
+}
+
+/* =============================================
+   COMPOSANTS UTILITAIRES
+   ============================================= */
+
+/* Bouton primaire violet */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.75rem;
+  background: linear-gradient(135deg, #7c3aed, #5b21b6);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+.btn-primary:hover {
+  background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+  box-shadow: 0 0 20px rgba(124, 58, 237, 0.5);
+  transform: translateY(-1px);
+}
+
+/* Bouton secondaire outline */
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.75rem;
+  background: transparent;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-radius: 4px;
+  border: 1px solid rgba(255,255,255,0.5);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+.btn-secondary:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: #ffffff;
+  transform: translateY(-1px);
+}
+
+/* Bouton outline violet */
+.btn-outline-violet {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.75rem;
+  background: transparent;
+  color: var(--violet-light);
+  font-weight: 700;
+  font-size: 0.875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-radius: 4px;
+  border: 1px solid var(--violet);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+.btn-outline-violet:hover {
+  background: rgba(124, 58, 237, 0.15);
+  border-color: var(--violet-light);
+  transform: translateY(-1px);
+}
+
+/* Card generique */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-base);
+  border-radius: 8px;
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+.card:hover {
+  border-color: var(--violet);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(124, 58, 237, 0.15);
+}
+
+/* Badge categorie */
+.badge {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* Titre de section standard */
+.section-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 2rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #ffffff;
+}
+.section-title span {
+  color: var(--violet-light);
+}
+
+/* Separateur */
+.divider {
+  width: 100%;
+  height: 1px;
+  background: var(--border-base);
+  margin: 2rem 0;
+}
+
+/* Gradient de fond subtil pour sections CTA */
+.section-gradient {
+  background: linear-gradient(180deg, transparent, rgba(124, 58, 237, 0.05), transparent);
+}
+
+/* =============================================
+   RESPONSIVE HELPERS
+   ============================================= */
+.container-custom {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .section-title {
+    font-size: 1.5rem;
+  }
+}
