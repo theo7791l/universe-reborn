@@ -4,10 +4,10 @@ import { team } from '../data/team.js'
 
 const TIMELINE = [
   { year: '2023',    side: 'left',  title: 'Découverte',         text: 'Découverte de DarkflameServer, première installation et tests sur une machine locale.' },
-  { year: '2024 T1', side: 'right', title: 'Naissance du projet', text: 'Décision de lancer Universe Reborn. Constitution de l’équipe fondatrice et mise en place de l’infrastructure.' },
-  { year: '2024 T3', side: 'left',  title: 'Beta privée',         text: 'Premier serveur de test opérationnel. Ouverture d’une bêta fermée pour les premiers testeurs volontaires.' },
+  { year: '2024 T1', side: 'right', title: 'Naissance du projet', text: "Décision de lancer Universe Reborn. Constitution de l'équipe fondatrice et mise en place de l'infrastructure." },
+  { year: '2024 T3', side: 'left',  title: 'Beta privée',         text: "Premier serveur de test opérationnel. Ouverture d'une bêta fermée pour les premiers testeurs volontaires." },
   { year: '2025',    side: 'right', title: 'Site communautaire',   text: 'Développement du site web et du panel de gestion. Affinage du gameplay et correction des bugs majeurs.' },
-  { year: '2026',    side: 'left',  title: 'Lancement public',     text: 'Ouverture officielle d’Universe Reborn au public francophone. Rejoignez l’aventure !' },
+  { year: '2026',    side: 'left',  title: 'Lancement public',     text: "Ouverture officielle d'Universe Reborn au public francophone. Rejoignez l'aventure !" },
 ]
 
 function TeamCard({ member }) {
@@ -30,7 +30,7 @@ export default function About() {
   return (
     <div>
       <PageHero
-        titleWhite="À Propos d’"
+        titleWhite="À Propos d'"
         titleColored="Universe Reborn"
         subtitle="Un projet communautaire francophone pour faire revivre LEGO Universe."
       />
@@ -49,12 +49,12 @@ export default function About() {
                 libre, aventure et multijoueur massif dans un univers LEGO vivant.
               </p>
               <p>
-                En janvier 2012, après seulement 15 mois d’exploitation, le jeu ferme ses portes
+                En janvier 2012, après seulement 15 mois d&apos;exploitation, le jeu ferme ses portes
                 pour des raisons financières. Des milliers de joueurs se retrouvent sans leur monde
                 favori, laissant une communauté nostalgique orpheline.
               </p>
               <p>
-                C’est là que <span className="text-violet-400 font-semibold">DarkflameServer</span> entre en scène :
+                C&apos;est là que <span className="text-violet-400 font-semibold">DarkflameServer</span> entre en scène :
                 un émulateur open-source développé par la communauté, sous licence AGPLv3, qui permet
                 de faire tourner un serveur fidèle au jeu original. Universe Reborn est né de la volonté
                 de réunir la communauté francophone autour de ce projet.
@@ -94,10 +94,10 @@ export default function About() {
         </div>
       </section>
 
-      {/* ====== L’ÉQUIPE ====== */}
+      {/* ====== L'ÉQUIPE ====== */}
       <section className="py-20">
         <div className="container-custom">
-          <h2 className="section-title text-center mb-12">L’<span>Équipe</span></h2>
+          <h2 className="section-title text-center mb-12">L&apos;<span>Équipe</span></h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {team.map(m => <TeamCard key={m.id} member={m} />)}
           </div>
@@ -151,7 +151,7 @@ export default function About() {
             <div className="flex flex-col gap-2">
               <h3 className="text-orange-400 font-bold text-sm uppercase tracking-wider">Avis de non-affiliation</h3>
               <p className="text-gray-400 text-xs leading-relaxed">
-                Universe Reborn est un projet fan non-officiel. Ce serveur <strong className="text-white">n’est pas affilié</strong> au
+                Universe Reborn est un projet fan non-officiel. Ce serveur <strong className="text-white">n&apos;est pas affilié</strong> au
                 Groupe LEGO, NetDevil, Gazillion Entertainment ou Warner Bros. Interactive Entertainment.
                 LEGO et LEGO Universe sont des marques déposées du Groupe LEGO. Ce projet est opéré bénévolement
                 par des fans, sans aucun but lucratif.
