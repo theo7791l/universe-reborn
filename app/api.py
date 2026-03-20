@@ -12,8 +12,7 @@ def server_status():
         with db.engine.connect() as conn:
             total = conn.execute(db.text("SELECT COUNT(*) FROM accounts")).fetchone()[0]
             chars = conn.execute(db.text("SELECT COUNT(*) FROM charinfo")).fetchone()[0]
-        return jsonify({'online': True, 'accounts': total, 'characters': chars})
-    except Exception as e:
+        return jsonify({'online': True, 'total_users': total, 'total_characters': chars, 'players_online': 0})    except Exception as e:
         return jsonify({'online': False, 'error': str(e)})
 
 
