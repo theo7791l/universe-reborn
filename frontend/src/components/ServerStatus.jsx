@@ -6,8 +6,7 @@ export default function ServerStatus({ className = '' }) {
 
   useEffect(() => {
     const fetchStatus = () => {
-      fetch('https://api.hostepics.fr/status')
-        .then(r => r.json())
+      fetch('/api/status')        .then(r => r.json())
         .then(d => setData(d))
         .catch(() => setData({ online: false, players: 0, maxPlayers: 0 }))
     }
