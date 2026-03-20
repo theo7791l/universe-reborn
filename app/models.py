@@ -35,24 +35,26 @@ class UserModel(UserMixin):
 
 @login_manager.user_loader
 def load_user(user_id):
-    from app import db
-    conn = db.engine
-    result = conn.execute(
-        db.text("SELECT id, name, gm_level FROM accounts WHERE id = :id"),
-        {'id': int(user_id)}
-    ).fetchone()
-    if result is None:
+    """Charge un utilisateur depuis la session Flask-Login.
+    IMPORTANT: db.engine.execute() est supprimé en SQLAlchemy 2.x.
+    On utilise db.engine.connect() + context manager.
+    """
+    try:
+        with db.engine.connect() as conn:
+            result = conn.execute(
+                db.text("SELECT id, name, gm_level FROM accounts WHERE id = :id"),
+                {'id': int(user_id)}
+            ).fetchone()
+        if result is None:
+            return None
+        return UserModel(result[0], result[1], result[2])
+    except Exception:
         return None
-    return UserModel(result[0], result[1], result[2])
 
 
 # ---------------------------------------------------------------------------
-# TABLES DARKFLAMESERVER (bind='darkflame') — toutes les requêtes SQL brutes
-# On n'utilise pas ces modèles SQLAlchemy directement,
-# on passe par db.engine.execute() pour la compatibilité maximale.
-# ---------------------------------------------------------------------------
-
 # Noms de zones DarkflameServer
+# ---------------------------------------------------------------------------
 ZONE_NAMES = {
     0: 'Aucune', 1000: 'Venture Explorer', 1100: 'Avant Gardens',
     1101: 'AG Survival', 1102: 'Spider Queen Battle',

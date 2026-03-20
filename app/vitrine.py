@@ -1,4 +1,3 @@
-import time
 from flask import Blueprint, render_template
 from app import db
 from app.models import NewsArticle, ZONE_NAMES
@@ -6,17 +5,26 @@ from app.models import NewsArticle, ZONE_NAMES
 vitrine_bp = Blueprint('vitrine', __name__)
 
 
-@vitrine_bp.route('/')
-def index():
-    articles = NewsArticle.query.filter_by(is_published=True)\
-        .order_by(NewsArticle.published_at.desc()).limit(3).all()
+def _scalar(sql, default=0):
     try:
         with db.engine.connect() as conn:
-            total_users = conn.execute(db.text("SELECT COUNT(*) FROM accounts")).fetchone()[0]
-            total_characters = conn.execute(db.text("SELECT COUNT(*) FROM charinfo")).fetchone()[0]
+            row = conn.execute(db.text(sql)).fetchone()
+        return row[0] if row else default
     except Exception:
-        total_users = 0
-        total_characters = 0
+        return default
+
+
+@vitrine_bp.route('/')
+def index():
+    try:
+        articles = NewsArticle.query.filter_by(is_published=True)\
+            .order_by(NewsArticle.published_at.desc()).limit(3).all()
+    except Exception:
+        articles = []
+
+    total_users      = _scalar("SELECT COUNT(*) FROM accounts")
+    total_characters = _scalar("SELECT COUNT(*) FROM charinfo")
+
     return render_template(
         'vitrine/index.html',
         articles=articles,
@@ -43,9 +51,10 @@ def gallery():
 
 @vitrine_bp.route('/leaderboard')
 def leaderboard():
+    chars = []
     try:
         with db.engine.connect() as conn:
-            # Tentative de récupération avec level et universe_score si colonnes existent
+            # Tentative avec level + universe_score
             try:
                 rows = conn.execute(db.text(
                     "SELECT c.name, c.last_zone, c.last_login, "
@@ -55,25 +64,23 @@ def leaderboard():
                 )).fetchall()
                 chars = [{
                     'name': r[0],
-                    'zone': ZONE_NAMES.get(r[1], f'Zone {r[1]}') if r[1] else 'Inconnu',
+                    'current_zone': ZONE_NAMES.get(r[1], f'Zone {r[1]}') if r[1] else 'Inconnu',
                     'last_login': r[2],
                     'level': r[3] or 0,
-                    'universe_score': r[4] or 0,
-                    'current_zone': ZONE_NAMES.get(r[1], f'Zone {r[1]}') if r[1] else 'Inconnu'
+                    'universe_score': r[4] or 0
                 } for r in rows]
             except Exception:
-                # Fallback si colonnes level/universe_score absentes
+                # Fallback sans level/universe_score
                 rows = conn.execute(db.text(
                     "SELECT c.name, c.last_zone, c.last_login "
-                    "FROM charinfo c ORDER BY c.last_login DESC LIMIT 25"
+                    "FROM charinfo c ORDER BY last_login DESC LIMIT 25"
                 )).fetchall()
                 chars = [{
                     'name': r[0],
-                    'zone': ZONE_NAMES.get(r[1], f'Zone {r[1]}') if r[1] else 'Inconnu',
+                    'current_zone': ZONE_NAMES.get(r[1], f'Zone {r[1]}') if r[1] else 'Inconnu',
                     'last_login': r[2],
                     'level': 0,
-                    'universe_score': 0,
-                    'current_zone': ZONE_NAMES.get(r[1], f'Zone {r[1]}') if r[1] else 'Inconnu'
+                    'universe_score': 0
                 } for r in rows]
     except Exception:
         chars = []
