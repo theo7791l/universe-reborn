@@ -4,8 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Universe Reborn{% endblock %}</title>
-    <meta name="description" content="Universe Reborn — Serveur communautaire LEGO Universe privé, basé sur DarkflameServer.">
+    <meta name="description" content="{% block meta_description %}Universe Reborn — Serveur communautaire LEGO Universe privé, basé sur DarkflameServer.{% endblock %}">
     <meta name="theme-color" content="#0066cc">
+    <!-- Open Graph -->
+    <meta property="og:title" content="{% block og_title %}Universe Reborn{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}Redécouvrez LEGO® Universe sur notre serveur communautaire gratuit.{% endblock %}">
+    <meta property="og:type" content="website">
     <!-- CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/animations.css') }}">
@@ -35,11 +39,11 @@
         </a>
         <ul class="navbar-links" id="navbar-links">
             <li><a href="{{ url_for('vitrine.index') }}" class="nav-link {% if request.endpoint == 'vitrine.index' %}active{% endif %}">Accueil</a></li>
-            <li><a href="{{ url_for('vitrine.about') }}" class="nav-link {% if request.endpoint == 'vitrine.about' %}active{% endif %}">À Propos</a></li>
+            <li><a href="{{ url_for('vitrine.about') }}" class="nav-link {% if request.endpoint == 'vitrine.about' %}active{% endif %}">&#192; Propos</a></li>
             <li><a href="{{ url_for('vitrine.guide') }}" class="nav-link {% if request.endpoint == 'vitrine.guide' %}active{% endif %}">Comment jouer</a></li>
             <li><a href="{{ url_for('news.index') }}" class="nav-link {% if request.endpoint and request.endpoint.startswith('news') %}active{% endif %}">Actualités</a></li>
-            <li><a href="{{ url_for('vitrine.leaderboard') }}" class="nav-link">Classements</a></li>
-            <li><a href="{{ url_for('vitrine.gallery') }}" class="nav-link">Galerie</a></li>
+            <li><a href="{{ url_for('vitrine.leaderboard') }}" class="nav-link {% if request.endpoint == 'vitrine.leaderboard' %}active{% endif %}">Classements</a></li>
+            <li><a href="{{ url_for('vitrine.gallery') }}" class="nav-link {% if request.endpoint == 'vitrine.gallery' %}active{% endif %}">Galerie</a></li>
         </ul>
         <div class="navbar-actions">
             {% if current_user.is_authenticated %}
@@ -89,7 +93,7 @@
         <div class="footer-links">
             <div class="footer-col">
                 <h4>Navigation</h4>
-                <a href="{{ url_for('vitrine.about') }}">À Propos</a>
+                <a href="{{ url_for('vitrine.about') }}">&#192; Propos</a>
                 <a href="{{ url_for('vitrine.guide') }}">Comment jouer</a>
                 <a href="{{ url_for('news.index') }}">Actualités</a>
                 <a href="{{ url_for('vitrine.gallery') }}">Galerie</a>
@@ -107,7 +111,8 @@
             </div>
             <div class="footer-col">
                 <h4>Communauté</h4>
-                <a href="https://discord.gg/votre-invite" target="_blank" rel="noopener">Discord</a>
+                {# Bug #6 fix : lien Discord réel. TODO: remplacer par votre vraie invitation #}
+                <a href="https://discord.gg/universe-reborn" target="_blank" rel="noopener">💬 Discord</a>
                 <a href="{{ url_for('vitrine.legal') }}">Mentions légales</a>
                 <a href="https://github.com/DarkflameUniverse/DarkflameServer" target="_blank" rel="noopener">DarkflameServer</a>
             </div>

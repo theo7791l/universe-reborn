@@ -4,12 +4,16 @@
 
 <section class="page-hero">
     <div class="page-hero-content">
+        <div class="page-hero-icon">🏆</div>
         <h1 class="page-title reveal">CLASSEMENTS</h1>
         <p class="page-subtitle reveal delay-2">Les meilleurs héros d'Universe Reborn</p>
     </div>
 </section>
 
 <section class="section-container">
+    {% if top_characters %}
+    <p class="leaderboard-updated reveal">Mise à jour : en temps réel depuis la base de données</p>
+    {% endif %}
     <div class="leaderboard-table-wrapper reveal">
         <table class="leaderboard-table">
             <thead>
@@ -38,31 +42,28 @@
                             <strong>{{ char.name }}</strong>
                         </td>
                         <td>
-                            {% if char.level and char.level > 0 %}
-                                <span class="level-badge">Niv. {{ char.level }}</span>
-                            {% else %}
-                                <span class="level-badge">Niv. —</span>
-                            {% endif %}
+                            <span class="level-badge">{% if char.level %}Niv. {{ char.level }}{% else %}—{% endif %}</span>
                         </td>
                         <td>
-                            {% if char.universe_score and char.universe_score > 0 %}
-                                <span class="score-value">{{ '{:,}'.format(char.universe_score | int).replace(',', ' ') }}</span>
+                            {% if char.universe_score %}
+                                <span class="score-value">{{ char.universe_score | int | format_number }}</span>
                             {% else %}
-                                <span class="score-value" style="opacity:0.4">—</span>
+                                <span style="opacity:0.35">—</span>
                             {% endif %}
                         </td>
                         <td><span class="zone-tag">{{ char.current_zone }}</span></td>
-                        <td><span style="color: var(--color-text-dim); font-size: 0.85rem;">
+                        <td><span style="color:var(--color-text-dim);font-size:0.85rem">
                             {% if char.last_login %}
-                                {{ char.last_login.strftime('%d/%m/%Y') if char.last_login.strftime is defined else char.last_login }}
+                                {% set ll = char.last_login %}
+                                {{ ll.strftime('%d/%m/%Y') if ll.strftime is defined else ll }}
                             {% else %}—{% endif %}
                         </span></td>
                     </tr>
                     {% endfor %}
                 {% else %}
                 <tr>
-                    <td colspan="6" class="no-content" style="text-align:center; padding: 3rem">
-                        Aucun joueur classé pour le moment. Soyez le premier !
+                    <td colspan="6" style="text-align:center;padding:3rem;color:var(--color-text-muted);font-style:italic">
+                        Aucun classement disponible pour le moment. Soyez le premier !
                     </td>
                 </tr>
                 {% endif %}

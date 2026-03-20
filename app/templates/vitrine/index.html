@@ -17,7 +17,7 @@
             <span class="title-universe">UNIVERSE</span>
             <span class="title-reborn">REBORN</span>
         </h1>
-        <p class="hero-subtitle">Redécouvrez l'aventure LEGO® Universe sur notre serveur communautaire.<br>Construisez, explorez et combattez le Maelstrom !</p>
+        <p class="hero-subtitle">Redécouvrez l'aventure LEGO® Universe sur notre serveur communautaire.<br>Construisez, explorez et combattez le Maelstrom !</p>
         <div class="hero-cta">
             <a href="{{ url_for('accounts.register') }}" class="btn-primary btn-glow">REJOINDRE L'AVENTURE</a>
             <a href="{{ url_for('vitrine.guide') }}" class="btn-secondary">COMMENT JOUER</a>
@@ -28,6 +28,7 @@
                 <span class="stat-label">Joueurs inscrits</span>
             </div>
             <div class="stat-item">
+                {# players-online est rempli par status.js (0 si offline, réel si online) #}
                 <span class="stat-value" id="players-online">0</span>
                 <span class="stat-label">En ligne</span>
             </div>
@@ -50,26 +51,28 @@
             <h2 class="section-title">EXPLOREZ LES <span class="text-glow">MONDES</span></h2>
             <p class="section-subtitle">Voyagez à travers les différents mondes de LEGO® Universe</p>
         </div>
-        <div class="worlds-grid" id="worlds-grid">
+        <div class="worlds-grid">
             {% set worlds = [
-                {'name': 'Venture Explorer', 'desc': 'Le vaisseau de départ, premier pas vers l\'aventure', 'color': '#0066CC', 'zone_id': 1000},
-                {'name': 'Avant Gardens',    'desc': 'Les jardins luxuriants envahis par le Maelstrom',   'color': '#00AA44', 'zone_id': 1100},
-                {'name': 'Nimbus Station',   'desc': 'La ville dans les nuages, carrefour des héros',      'color': '#FF6600', 'zone_id': 1200},
-                {'name': 'Pet Cove',         'desc': 'L\'île des créatures apprivoisables',                'color': '#FF44AA', 'zone_id': 1201},
-                {'name': 'Gnarled Forest',   'desc': 'La forêt tortueuse des pirates',                     'color': '#884400', 'zone_id': 1300},
-                {'name': 'Forbidden Valley', 'desc': 'La vallée interdite des ninjas',                     'color': '#6600CC', 'zone_id': 1400},
-                {'name': 'Nexus Tower',      'desc': 'Le quartier général de la Nexus Force',              'color': '#0088FF', 'zone_id': 1600},
-                {'name': 'Crux Prime',       'desc': 'Le cœur du Maelstrom, monde final',                 'color': '#CC0000', 'zone_id': 1800}
+                {'name': 'Venture Explorer', 'desc': 'Le vaisseau de départ, premier pas vers l\'aventure', 'color': '#0066CC', 'zone_id': 1000, 'icon': '🚀'},
+                {'name': 'Avant Gardens',    'desc': 'Les jardins luxuriants envahis par le Maelstrom',   'color': '#00AA44', 'zone_id': 1100, 'icon': '🌿'},
+                {'name': 'Nimbus Station',   'desc': 'La ville dans les nuages, carrefour des héros',      'color': '#FF6600', 'zone_id': 1200, 'icon': '☁️'},
+                {'name': 'Pet Cove',         'desc': 'L\'île des créatures apprivoisables',                'color': '#FF44AA', 'zone_id': 1201, 'icon': '🐾'},
+                {'name': 'Gnarled Forest',   'desc': 'La forêt tortueuse des pirates',                     'color': '#884400', 'zone_id': 1300, 'icon': '🌳'},
+                {'name': 'Forbidden Valley', 'desc': 'La vallée interdite des ninjas',                     'color': '#6600CC', 'zone_id': 1400, 'icon': '⛰️'},
+                {'name': 'Nexus Tower',      'desc': 'Le quartier général de la Nexus Force',              'color': '#0088FF', 'zone_id': 1600, 'icon': '🏰'},
+                {'name': 'Crux Prime',       'desc': 'Le cœur du Maelstrom, monde final',                 'color': '#CC0000', 'zone_id': 1800, 'icon': '🔥'}
             ] %}
             {% for world in worlds %}
-            <div class="world-card" style="--world-color: {{ world.color }}" data-zone-id="{{ world.zone_id }}">
+            <div class="world-card" style="--world-color: {{ world.color }}">
                 <div class="world-image-placeholder">
-                    <div class="world-icon">🧱</div>
+                    <div class="world-icon">{{ world.icon }}</div>
                 </div>
                 <div class="world-info">
                     <h3 class="world-name">{{ world.name }}</h3>
                     <p class="world-desc">{{ world.desc }}</p>
-                    <span class="world-online"><span class="world-count" data-zone="{{ world.zone_id }}">0</span> en ligne</span>
+                    <span class="world-online">
+                        <span class="world-count" data-zone="{{ world.zone_id }}">0</span> en ligne
+                    </span>
                 </div>
             </div>
             {% endfor %}
@@ -91,11 +94,19 @@
                         {% if article.cover_image %}
                             <img src="{{ url_for('static', filename='uploads/' + article.cover_image) }}" alt="{{ article.title }}">
                         {% else %}
-                            <div class="news-placeholder"><span>{{ article.category }}</span></div>
+                            <div class="news-placeholder news-placeholder--{{ article.category | lower | replace(' ', '-') | replace('é', 'e') | replace('à', 'a') }}">
+                                <span class="news-placeholder-icon">
+                                    {% if 'annonce' in article.category|lower %}📢
+                                    {% elif 'mise' in article.category|lower or 'maj' in article.category|lower %}🔧
+                                    {% elif 'vén' in article.category|lower or 'event' in article.category|lower %}🎉
+                                    {% else %}📰{% endif %}
+                                </span>
+                                <span class="news-placeholder-label">{{ article.category }}</span>
+                            </div>
                         {% endif %}
                     </div>
                     <div class="news-card-body">
-                        <span class="news-category">{{ article.category }}</span>
+                        <span class="news-category news-category--{{ article.category | lower | replace(' ', '-') | replace('é', 'e') | replace('à', 'a') }}">{{ article.category }}</span>
                         <h3 class="news-title">{{ article.title }}</h3>
                         <p class="news-excerpt">{{ article.excerpt or article.content[:150] ~ '...' }}</p>
                         <div class="news-meta">
@@ -106,7 +117,7 @@
                 </a>
                 {% endfor %}
             {% else %}
-                <p class="no-content">Aucune actualité pour le moment. Revenez bientôt !</p>
+                <p class="no-content">Aucune actualité pour le moment. Revenez bientôt !</p>
             {% endif %}
         </div>
         <div class="section-cta">
@@ -122,39 +133,32 @@
             <div class="discord-icon">💬</div>
             <h2>REJOIGNEZ NOTRE <span class="text-glow">DISCORD</span></h2>
             <p>Rejoignez notre communauté Discord pour discuter avec d'autres joueurs, obtenir de l'aide et rester informé des dernières actualités.</p>
-            <a href="#" class="btn-discord" id="discord-btn">REJOINDRE LE DISCORD</a>
+            {# TODO: remplacer l'URL par votre vraie invitation Discord #}
+            <a href="https://discord.gg/universe-reborn" target="_blank" rel="noopener" class="btn-discord">REJOINDRE LE DISCORD</a>
         </div>
     </div>
 </section>
 {% endblock %}
 
 {% block extra_js %}
-<script src="{{ url_for('static', filename='js/counters.js') }}"></script>
-<script src="{{ url_for('static', filename='js/status.js') }}"></script>
 <script>
 /**
- * Mise à jour des compteurs de joueurs par monde
- * Appelle /api/online-players et distribue les counts par zone_id
+ * Compteurs par monde — appelle /api/online-players
+ * Si erreur ou serveur offline, tous les compteurs restent à 0
+ * (status.js se charge aussi de remettre à 0 via resetAllToZero)
  */
 (function () {
     function updateWorldCounts() {
         fetch('/api/online-players')
             .then(function (res) { return res.json(); })
             .then(function (players) {
-                // Initialiser tous les compteurs à 0
-                document.querySelectorAll('[data-zone]').forEach(function (el) {
-                    el.textContent = '0';
-                });
-                // Compter par zone
                 var counts = {};
                 players.forEach(function (p) {
-                    var zoneKey = String(p.zone_id || '');
-                    counts[zoneKey] = (counts[zoneKey] || 0) + 1;
+                    var z = String(p.zone_id || '');
+                    counts[z] = (counts[z] || 0) + 1;
                 });
-                // Injecter dans les spans
                 document.querySelectorAll('[data-zone]').forEach(function (el) {
-                    var z = String(el.dataset.zone);
-                    el.textContent = counts[z] || '0';
+                    el.textContent = counts[String(el.dataset.zone)] || '0';
                 });
             })
             .catch(function () {
@@ -163,7 +167,6 @@
                 });
             });
     }
-
     updateWorldCounts();
     setInterval(updateWorldCounts, 30000);
 })();

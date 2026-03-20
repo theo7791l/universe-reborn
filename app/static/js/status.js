@@ -1,46 +1,66 @@
 /**
  * Universe Reborn — Statut serveur en temps réel
- * Appelle l'API /api/status toutes les 30 secondes
+ * Appelle /api/status toutes les 30s
+ * Règle absolue : si offline -> TOUS les compteurs = 0
  */
-(function() {
-    var badge        = document.getElementById('server-status-badge');
-    var statusText   = document.getElementById('status-text');
-    var statusDot    = document.getElementById('status-dot');
+(function () {
+    var badge         = document.getElementById('server-status-badge');
+    var statusText    = document.getElementById('status-text');
+    var statusDot     = document.getElementById('status-dot');
     var playersOnline = document.getElementById('players-online');
 
     if (!badge || !statusText) return;
 
-    function setAllZeroOnline() {
+    function resetAllToZero() {
         if (playersOnline) playersOnline.textContent = '0';
-        document.querySelectorAll('[data-zone]').forEach(function(el) {
+        // Réinitialiser les compteurs par monde
+        document.querySelectorAll('[data-zone]').forEach(function (el) {
             el.textContent = '0';
         });
+        // Réinitialiser aussi les data-target animés si serveur offline
+        // (on force le texte visible à 0, pas le data-target)
     }
 
     function updateStatus() {
         fetch('/api/status')
-            .then(function(res) { return res.json(); })
-            .then(function(data) {
+            .then(function (res) {
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                return res.json();
+            })
+            .then(function (data) {
                 if (data.online) {
                     badge.classList.remove('offline');
-                    var count = typeof data.players_online === 'number' ? data.players_online : 0;
-                    statusText.textContent = 'SERVEUR EN LIGNE' + (count > 0 ? ' — ' + count + ' JOUEUR' + (count > 1 ? 'S' : '') : '');
-                    if (statusDot) statusDot.style.background = 'var(--color-success)';
+                    badge.classList.add('online');
+                    var count = (typeof data.players_online === 'number') ? data.players_online : 0;
+                    var label = count > 0
+                        ? 'EN LIGNE — ' + count + ' JOUEUR' + (count > 1 ? 'S' : '')
+                        : 'SERVEUR EN LIGNE';
+                    statusText.textContent = label;
+                    if (statusDot) {
+                        statusDot.style.background = 'var(--color-success)';
+                        statusDot.style.animation = 'pulse 2s infinite';
+                    }
                     if (playersOnline) playersOnline.textContent = count;
                 } else {
+                    badge.classList.remove('online');
                     badge.classList.add('offline');
                     statusText.textContent = 'SERVEUR HORS LIGNE';
-                    if (statusDot) statusDot.style.background = 'var(--color-danger)';
-                    // Serveur éteint : tous les compteurs à 0
-                    setAllZeroOnline();
+                    if (statusDot) {
+                        statusDot.style.background = 'var(--color-danger)';
+                        statusDot.style.animation = 'none';
+                    }
+                    // Règle critique : serveur offline = TOUS les compteurs à 0
+                    resetAllToZero();
                 }
             })
-            .catch(function() {
+            .catch(function () {
+                badge.classList.add('offline');
                 statusText.textContent = 'STATUT INCONNU';
-                setAllZeroOnline();
+                resetAllToZero();
             });
     }
 
+    // Lancement immédiat + interval 30s
     updateStatus();
     setInterval(updateStatus, 30000);
 })();

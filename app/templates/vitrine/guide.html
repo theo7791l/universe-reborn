@@ -2,10 +2,17 @@
 {% block title %}Comment Jouer — Universe Reborn{% endblock %}
 {% block content %}
 
+{# Bug #4 fix : hero section avec titre et sous-titre bien visibles #}
 <section class="page-hero">
     <div class="page-hero-content">
+        <div class="page-hero-icon">🎮</div>
         <h1 class="page-title reveal">COMMENT <span class="text-glow">JOUER</span></h1>
-        <p class="page-subtitle reveal delay-2">Suivez ce guide pour rejoindre Universe Reborn en quelques minutes</p>
+        <p class="page-subtitle reveal delay-2">Guide d'installation en 5 étapes pour rejoindre Universe Reborn</p>
+        <div class="page-hero-badges">
+            <span class="page-hero-badge">✅ Gratuit</span>
+            <span class="page-hero-badge">⏱️ 5 minutes</span>
+            <span class="page-hero-badge">💻 Windows / Mac</span>
+        </div>
     </div>
 </section>
 
@@ -28,7 +35,11 @@
             <div class="step-content">
                 <h2>Créer votre compte</h2>
                 <p>Rendez-vous sur la page d'inscription et créez votre compte Universe Reborn. Vous aurez besoin d'une <strong>clé d'accès (Play Key)</strong> disponible sur notre serveur Discord.</p>
-                <a href="{{ url_for('accounts.register') }}" class="btn-primary">CRÉER UN COMPTE</a>
+                <div style="display:flex; gap:1rem; flex-wrap:wrap; margin-top:1rem;">
+                    <a href="{{ url_for('accounts.register') }}" class="btn-primary">CRÉER UN COMPTE</a>
+                    {# TODO: remplacer par votre vraie invitation Discord #}
+                    <a href="https://discord.gg/universe-reborn" target="_blank" rel="noopener" class="btn-secondary">OBTENIR UNE CLÉ (DISCORD)</a>
+                </div>
             </div>
         </div>
 
@@ -57,8 +68,8 @@
         <div class="guide-step reveal">
             <div class="step-number">05</div>
             <div class="step-content">
-                <h2>Lancer LEGO Universe et jouer !</h2>
-                <p>Lancez LEGO Universe normalement, connectez-vous avec les identifiants de votre compte Universe Reborn et profitez du jeu !</p>
+                <h2>Lancer LEGO Universe et jouer !</h2>
+                <p>Lancez LEGO Universe normalement, connectez-vous avec les identifiants de votre compte Universe Reborn et profitez du jeu !</p>
                 <div class="step-success">
                     ✅ Si le serveur est en ligne, vous devriez voir l'écran de connexion d'Universe Reborn.
                 </div>
@@ -72,35 +83,39 @@
         <h2 class="section-title reveal">FAQ — <span class="text-glow">Questions fréquentes</span></h2>
         <div class="faq-list">
             <div class="faq-item reveal">
-                <button class="faq-question">Où obtenir une clé d'accès (Play Key) ?</button>
+                <button class="faq-question">Ù obtenir une clé d'accès (Play Key) ?</button>
                 <div class="faq-answer"><p>Les clés d'accès sont distribuées sur notre serveur Discord. Rejoignez-nous et demandez une clé dans le canal dédié.</p></div>
             </div>
             <div class="faq-item reveal">
-                <button class="faq-question">Le jeu est-il gratuit ?</button>
+                <button class="faq-question">Le jeu est-il gratuit ?</button>
                 <div class="faq-answer"><p>Universe Reborn est entièrement gratuit. Cependant, vous devez posséder le client original de LEGO Universe.</p></div>
             </div>
             <div class="faq-item reveal">
-                <button class="faq-question">Quels mondes sont disponibles ?</button>
-                <div class="faq-answer"><p>La plupart des mondes originaux sont disponibles : Venture Explorer, Avant Gardens, Nimbus Station, Forbidden Valley, Nexus Tower et plus encore.</p></div>
+                <button class="faq-question">Quels mondes sont disponibles ?</button>
+                <div class="faq-answer"><p>La plupart des mondes originaux sont disponibles : Venture Explorer, Avant Gardens, Nimbus Station, Forbidden Valley, Nexus Tower et plus encore.</p></div>
             </div>
             <div class="faq-item reveal">
-                <button class="faq-question">Le serveur est-il stable ?</button>
+                <button class="faq-question">Le serveur est-il stable ?</button>
                 <div class="faq-answer"><p>Nous faisons de notre mieux pour maintenir le serveur en ligne en permanence. Consultez la page d'accueil pour le statut en temps réel.</p></div>
+            </div>
+            <div class="faq-item reveal">
+                <button class="faq-question">Le téléchargement de boot.cfg ne fonctionne pas ?</button>
+                <div class="faq-answer"><p>Assurez-vous que le serveur est en ligne. Si le téléchargement échoue, réessayez ou contactez-nous sur Discord.</p></div>
             </div>
         </div>
     </div>
 </section>
+{% endblock %}
 
 {% block extra_js %}
 <script>
-document.querySelectorAll('.faq-question').forEach(btn => {
-    btn.addEventListener('click', () => {
-        const item = btn.parentElement;
-        const isOpen = item.classList.contains('open');
-        document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+document.querySelectorAll('.faq-question').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+        var item = btn.parentElement;
+        var isOpen = item.classList.contains('open');
+        document.querySelectorAll('.faq-item').forEach(function(i) { i.classList.remove('open'); });
         if (!isOpen) item.classList.add('open');
     });
 });
 </script>
-{% endblock %}
 {% endblock %}
