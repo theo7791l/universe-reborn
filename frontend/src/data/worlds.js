@@ -1,6 +1,6 @@
 import {
   Rocket, Leaf, Building2, PawPrint,
-  TreePine, Mountain, Tower, Sword, Flame
+  TreePine, Mountain, Castle, Sword, Flame
 } from 'lucide-react'
 
 export const worlds = [
@@ -9,7 +9,7 @@ export const worlds = [
     name: 'Venture Explorer',
     icon: Rocket,
     players: 12,
-    description: 'Le vaisseau spatial où commence l’aventure. Ton premier pas dans LEGO Universe.',
+    description: "Le vaisseau spatial où commence l'aventure. Ton premier pas dans LEGO Universe.",
     color: '#3b82f6',
   },
   {
@@ -25,7 +25,7 @@ export const worlds = [
     name: 'Nimbus Station',
     icon: Building2,
     players: 35,
-    description: 'Le hub central d’Universe. Rejoins une faction et explore les arenas de combat.',
+    description: "Le hub central d'Universe. Rejoins une faction et explore les arenas de combat.",
     color: '#7c3aed',
   },
   {
@@ -55,7 +55,7 @@ export const worlds = [
   {
     id: 'nexus-tower',
     name: 'Nexus Tower',
-    icon: Tower,
+    icon: Castle,
     players: 31,
     description: 'Le quartier général des factions. Accède aux missions les plus dangereuses.',
     color: '#eab308',
@@ -65,7 +65,7 @@ export const worlds = [
     name: 'Ninjago Monastery',
     icon: Sword,
     players: 14,
-    description: 'Maîtrise les arts du Spinjitzu dans ce monaétaire légendaire.',
+    description: 'Maîtrise les arts du Spinjitzu dans ce monastère légendaire.',
     color: '#06b6d4',
   },
   {
