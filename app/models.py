@@ -70,14 +70,21 @@ ZONE_COLORS = {
 
 INVENTORY_NAMES = {
     '0': 'Items',
-    '1': 'Currency',
-    '2': 'Bricks',
-    '4': 'Models / Behaviors',
-    '5': 'Properties',
-    '6': 'Bricks in BBB',
-    '7': 'Temp items',
-    '8': 'Quetes',
-    '9': 'Donation',
+    '1': 'Monnaie',
+    '2': 'Briques',
+    '4': 'Modèles / Comportements',
+    '5': 'Propriétés',
+    '6': 'Briques BBB',
+    '7': 'Items temporaires',
+    '8': 'Quêtes',
+    '9': 'Donations',
+}
+
+# Permission map bits DarkflameServer
+PERM_BITS = {
+    4: 'Trade restreint',
+    5: 'Mail restreint',
+    6: 'Chat restreint',
 }
 
 
@@ -92,7 +99,7 @@ class NewsArticle(db.Model):
     content = db.Column(db.Text, nullable=False)
     excerpt = db.Column(db.String(500), nullable=True)
     cover_image = db.Column(db.String(256), nullable=True)
-    category = db.Column(db.String(64), default='Actualite')
+    category = db.Column(db.String(64), default='Actualité')
     author_name = db.Column(db.String(64), nullable=False, default='Admin')
     is_published = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
@@ -107,7 +114,8 @@ class BugReport(db.Model):
     reporter_name = db.Column(db.String(64), nullable=False)
     title = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text, nullable=False)
-    status = db.Column(db.String(32), default='open')  # open / in_progress / closed
+    # open / in_progress / closed / wont_fix
+    status = db.Column(db.String(32), default='open')
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
@@ -123,18 +131,21 @@ class AuditLog(db.Model):
 
 
 class PetName(db.Model):
-    """Noms de pets en attente de moderation (miroir de pet_names DarkflameServer)."""
+    """
+    Noms de pets en attente de modération.
+    Miroir/cache de la table `pet_names` DarkflameServer.
+    """
     __tablename__ = 'ur_pet_names'
-    id = db.Column(db.Integer, primary_key=True)  # = id dans pet_names DFS
+    id = db.Column(db.Integer, primary_key=True)  # même id que pet_names DFS
     pet_name = db.Column(db.String(64), nullable=False)
     owner_char_id = db.Column(db.Integer, nullable=True, index=True)
-    # approved: 0=rejected, 1=pending, 2=approved
+    # approved: 0=rejeté, 1=en attente, 2=approuvé
     approved = db.Column(db.Integer, default=1)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 
 class PasswordResetToken(db.Model):
-    """Tokens de reinitialisation de mot de passe."""
+    """Tokens de réinitialisation de mot de passe."""
     __tablename__ = 'ur_password_resets'
     id = db.Column(db.Integer, primary_key=True)
     account_id = db.Column(db.Integer, nullable=False, index=True)
@@ -142,3 +153,22 @@ class PasswordResetToken(db.Model):
     used = db.Column(db.Boolean, default=False)
     expires_at = db.Column(db.DateTime, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+class InGameMail(db.Model):
+    """
+    Log des mails in-game envoyés depuis le panel admin/mod.
+    Les mails sont insérés dans la table `mail` DarkflameServer,
+    ce modèle sert uniquement à conserver un historique côté site.
+    """
+    __tablename__ = 'ur_ingame_mail_log'
+    id = db.Column(db.Integer, primary_key=True)
+    sender_account_id = db.Column(db.Integer, nullable=False)
+    sender_name = db.Column(db.String(64), nullable=False, default='System')
+    receiver_char_id = db.Column(db.Integer, nullable=False, index=True)
+    receiver_name = db.Column(db.String(64), nullable=False)
+    subject = db.Column(db.String(200), nullable=False)
+    body = db.Column(db.Text, nullable=False)
+    attachment_lot = db.Column(db.Integer, nullable=True)
+    attachment_count = db.Column(db.Integer, nullable=True)
+    sent_at = db.Column(db.DateTime, default=datetime.utcnow)
