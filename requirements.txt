@@ -1,20 +1,11 @@
-# Framework web
 Flask>=3.0.0
 Flask-SQLAlchemy>=3.1.0
 Flask-Login>=0.6.3
 Flask-WTF>=1.2.1
 Flask-Migrate>=4.0.5
-
-# Serveur WSGI (Pterodactyl)
-gunicorn>=21.2.0
-
-# Base de données
+flask-jwt-extended>=4.6.0
 PyMySQL>=1.1.0
-
-# Sécurité
-Werkzeug>=3.0.0
-bcrypt>=4.1.0
-
-# Utilitaires
+bcrypt>=4.1.2
+gunicorn>=21.2.0
+WTForms>=3.1.2
 python-dotenv>=1.0.0
-email-validator>=2.1.0
