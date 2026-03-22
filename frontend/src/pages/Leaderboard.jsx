@@ -1,12 +1,11 @@
-import { useState } from 'react'
-import { Star, Coins, Trophy } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { Star, Trophy, Loader2, AlertCircle } from 'lucide-react'
 import PageHero from '../components/PageHero.jsx'
-import { leaderboard, FACTIONS } from '../data/leaderboard.js'
+import api from '../api/index.js'
 
 const TABS = [
-  { key: 'uscore', label: 'U-Score', icon: Trophy,  sortFn: (a, b) => b.uscore - a.uscore },
-  { key: 'level',  label: 'Niveau',  icon: Star,    sortFn: (a, b) => b.level - a.level  },
-  { key: 'coins',  label: 'Coins',   icon: Coins,   sortFn: (a, b) => b.coins - a.coins  },
+  { key: 'uscore', label: 'U-Score', icon: Trophy  },
+  { key: 'coins',  label: 'Coins',   icon: Star    },
 ]
 
 const RANK_STYLE = {
@@ -17,9 +16,18 @@ const RANK_STYLE = {
 
 export default function Leaderboard() {
   const [activeTab, setActiveTab] = useState('uscore')
+  const [data,      setData]      = useState([])
+  const [loading,   setLoading]   = useState(true)
+  const [error,     setError]     = useState('')
 
-  const tab     = TABS.find(t => t.key === activeTab)
-  const sorted  = [...leaderboard].sort(tab.sortFn).map((p, i) => ({ ...p, displayRank: i + 1 }))
+  useEffect(() => {
+    setLoading(true)
+    setError('')
+    api.get(`/api/leaderboard?sort=${activeTab}&limit=25`)
+      .then(r => setData(r.data))
+      .catch(() => setError('Impossible de charger le classement.'))
+      .finally(() => setLoading(false))
+  }, [activeTab])
 
   return (
     <div>
@@ -27,7 +35,7 @@ export default function Leaderboard() {
         titleWhite=""
         titleColored="Classements"
         colorClass="text-yellow-400"
-        subtitle="Les meilleurs joueurs d'Universe Reborn."
+        subtitle="Les meilleurs joueurs d’Universe Reborn."
       />
 
       <section className="py-12">
@@ -42,9 +50,7 @@ export default function Leaderboard() {
                   key={t.key}
                   onClick={() => setActiveTab(t.key)}
                   className={`flex items-center gap-2 px-4 py-2 rounded text-sm font-bold uppercase tracking-wider transition-all ${
-                    activeTab === t.key
-                      ? 'bg-violet-600 text-white'
-                      : 'text-gray-400 hover:text-white'
+                    activeTab === t.key ? 'bg-violet-600 text-white' : 'text-gray-400 hover:text-white'
                   }`}
                 >
                   <Icon size={14} /> {t.label}
@@ -53,66 +59,60 @@ export default function Leaderboard() {
             })}
           </div>
 
-          {/* Tableau */}
-          <div className="flex flex-col gap-2">
-            {/* En-têtes */}
-            <div className="grid grid-cols-12 px-4 py-2 text-xs font-bold uppercase tracking-widest text-gray-500">
-              <div className="col-span-1">Rang</div>
-              <div className="col-span-4">Personnage</div>
-              <div className="col-span-3">Joueur</div>
-              <div className="col-span-1 text-center">Niv.</div>
-              <div className="col-span-2 text-right">Coins</div>
-              <div className="col-span-1 text-right">Score</div>
+          {/* États */}
+          {loading && (
+            <div className="flex items-center justify-center py-20 gap-3 text-gray-400">
+              <Loader2 size={20} className="animate-spin" /> Chargement…
             </div>
+          )}
+          {error && (
+            <div className="flex items-center gap-2 text-sm text-red-400 bg-red-500/10 border border-red-500/30 rounded px-4 py-3">
+              <AlertCircle size={15} /> {error}
+            </div>
+          )}
 
-            {sorted.map(player => {
-              const r     = player.displayRank
-              const style = RANK_STYLE[r]
-              const fac   = FACTIONS[player.faction]
+          {/* Tableau */}
+          {!loading && !error && (
+            <div className="flex flex-col gap-2">
+              <div className="grid grid-cols-12 px-4 py-2 text-xs font-bold uppercase tracking-widest text-gray-500">
+                <div className="col-span-1">Rang</div>
+                <div className="col-span-5">Personnage</div>
+                <div className="col-span-3">Zone actuelle</div>
+                <div className="col-span-3 text-right">{activeTab === 'uscore' ? 'U-Score' : 'Coins'}</div>
+              </div>
 
-              return (
-                <div
-                  key={player.character}
-                  className={`grid grid-cols-12 items-center px-4 py-3 rounded-lg border ${
-                    style
-                      ? `${style.bg}`
-                      : 'bg-[#12121f] border-[#1e1e3a]'
-                  } transition-colors hover:border-violet-500/40`}
-                >
-                  {/* Rang */}
-                  <div className={`col-span-1 font-black text-lg ${style ? style.text : 'text-gray-400'}`}>
-                    {style ? style.medal : `#${r}`}
+              {data.length === 0 && (
+                <p className="text-center text-gray-500 py-12">Aucun joueur trouvé.</p>
+              )}
+
+              {data.map(player => {
+                const r     = player.rank
+                const style = RANK_STYLE[r]
+                return (
+                  <div
+                    key={player.name}
+                    className={`grid grid-cols-12 items-center px-4 py-3 rounded-lg border transition-colors hover:border-violet-500/40 ${
+                      style ? style.bg : 'bg-[#12121f] border-[#1e1e3a]'
+                    }`}
+                  >
+                    <div className={`col-span-1 font-black text-lg ${style ? style.text : 'text-gray-400'}`}>
+                      {style ? style.medal : `#${r}`}
+                    </div>
+                    <div className="col-span-5">
+                      <span className="text-white font-bold text-sm">{player.name}</span>
+                    </div>
+                    <div className="col-span-3 text-gray-400 text-sm">{player.zone}</div>
+                    <div className="col-span-3 text-right font-bold text-sm">
+                      {activeTab === 'uscore'
+                        ? <span className="text-violet-400">{(player.value ?? 0).toLocaleString()}</span>
+                        : <span className="text-yellow-400">{(player.value ?? 0).toLocaleString()}</span>
+                      }
+                    </div>
                   </div>
-
-                  {/* Personnage */}
-                  <div className="col-span-4">
-                    <span className="text-white font-bold text-sm">{player.character}</span>
-                    {fac && (
-                      <span className={`ml-2 badge text-xs ${fac.bg}`}>{player.faction}</span>
-                    )}
-                  </div>
-
-                  {/* Joueur */}
-                  <div className="col-span-3 text-gray-400 text-sm">{player.player}</div>
-
-                  {/* Niveau */}
-                  <div className="col-span-1 text-center">
-                    <span className="text-white font-bold text-sm">{player.level}</span>
-                  </div>
-
-                  {/* Coins */}
-                  <div className="col-span-2 text-right text-yellow-400 font-semibold text-sm">
-                    {player.coins.toLocaleString()}
-                  </div>
-
-                  {/* U-Score */}
-                  <div className="col-span-1 text-right text-violet-400 font-bold text-xs">
-                    {(player.uscore / 1000).toFixed(0)}k
-                  </div>
-                </div>
-              )
-            })}
-          </div>
+                )
+              })}
+            </div>
+          )}
         </div>
       </section>
     </div>

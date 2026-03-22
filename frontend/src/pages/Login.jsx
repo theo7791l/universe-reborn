@@ -1,14 +1,27 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { Gamepad2, Mail, Lock, LogIn } from 'lucide-react'
+import { Link, useNavigate } from 'react-router-dom'
+import { Gamepad2, User, Lock, LogIn, AlertCircle, Loader2 } from 'lucide-react'
+import { useAuth } from '../context/AuthContext.jsx'
 
 export default function Login() {
-  const [form, setForm] = useState({ email: '', password: '' })
+  const { login }      = useAuth()
+  const navigate       = useNavigate()
+  const [form, setForm] = useState({ username: '', password: '' })
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
 
-  const handleSubmit = e => {
+  const handleSubmit = async e => {
     e.preventDefault()
-    // TODO: connecter à l’API DarkflameServer
-    alert('Connexion à venir — API non connectée.')
+    setError('')
+    setLoading(true)
+    try {
+      await login(form.username, form.password)
+      navigate('/')
+    } catch (err) {
+      setError(err.response?.data?.error ?? 'Erreur de connexion.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -16,7 +29,6 @@ export default function Login() {
       <div className="w-full max-w-md">
         <div className="card p-8 flex flex-col gap-6">
 
-          {/* Logo */}
           <div className="flex flex-col items-center gap-3">
             <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-600 to-purple-800 flex items-center justify-center shadow-lg shadow-violet-500/30">
               <Gamepad2 size={28} className="text-white" />
@@ -30,17 +42,16 @@ export default function Login() {
             </div>
           </div>
 
-          {/* Formulaire */}
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Email</label>
+              <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Pseudo</label>
               <div className="relative">
-                <Mail size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
+                <User size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
                 <input
-                  type="email"
-                  placeholder="votre@email.com"
-                  value={form.email}
-                  onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
+                  type="text"
+                  placeholder="Votre pseudo"
+                  value={form.username}
+                  onChange={e => setForm(f => ({ ...f, username: e.target.value }))}
                   required
                   className="w-full bg-[#0d0d1a] border border-[#1e1e3a] rounded pl-9 pr-4 py-2.5 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-violet-500 transition-colors"
                 />
@@ -62,8 +73,15 @@ export default function Login() {
               </div>
             </div>
 
-            <button type="submit" className="btn-primary justify-center mt-2">
-              <LogIn size={15} /> Se connecter
+            {error && (
+              <div className="flex items-center gap-2 text-xs text-red-400 bg-red-500/10 border border-red-500/30 rounded px-3 py-2">
+                <AlertCircle size={13} /> {error}
+              </div>
+            )}
+
+            <button type="submit" disabled={loading} className="btn-primary justify-center mt-2 disabled:opacity-60">
+              {loading ? <Loader2 size={15} className="animate-spin" /> : <LogIn size={15} />}
+              Se connecter
             </button>
           </form>
 
